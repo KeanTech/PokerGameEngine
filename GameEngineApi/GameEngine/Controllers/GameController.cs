@@ -1,4 +1,5 @@
 ﻿using GameEngine.Core.Managers;
+using GameEngine.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameEngine.Controllers
@@ -16,8 +17,9 @@ namespace GameEngine.Controllers
 
         [HttpPost]
         [Route("Call")]
-        public IActionResult Call() 
+        public IActionResult Call(PlayerEvent playerEvent) 
         {
+            // Make Webhook logic
             return Ok();
         }
 

@@ -1,6 +1,6 @@
 ﻿namespace GameEngine.Models.Game
 {
-    public class PokerTable
+    public class Table
     {
     }
 }

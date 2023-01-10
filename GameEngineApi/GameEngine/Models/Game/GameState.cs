@@ -2,7 +2,7 @@
 {
     public class GameState
     {
-        public PokerTable PokerTable { get; set; }
+        public Table PokerTable { get; set; }
         public int CurrentPlayerId { get; set; }
         public string PlayerIdentifier { get; set; }
     }

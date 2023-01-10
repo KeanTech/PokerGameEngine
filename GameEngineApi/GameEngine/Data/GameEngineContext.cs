@@ -15,5 +15,9 @@ namespace GameEngine.Data
         }
 
         public DbSet<GameEngine.Models.Game.User> User { get; set; } = default!;
-    }
+		public DbSet<GameEngine.Models.Game.Table> Table { get; set; } = default!;
+		public DbSet<GameEngine.Models.Game.Accessory> Accessory { get; set; } = default!;
+		public DbSet<GameEngine.Models.Game.Chip> Chip { get; set; } = default!;
+		public DbSet<GameEngine.Models.Game.Card> Card { get; set; } = default!;
+	}
 }

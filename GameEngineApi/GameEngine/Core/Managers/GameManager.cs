@@ -17,9 +17,9 @@ namespace GameEngine.Core.Managers
             // this should get called when the gameController get call 
 
             // Game stat is used to see the previous players turn and set the next players turn
-        }
+        } 
 
-        public UpdateGameState()
+        public GameState UpdateGameState()
         {
             GameState gameState; // get from service 
             // used to update the whole game.
@@ -57,14 +57,12 @@ namespace GameEngine.Core.Managers
 
         public void EndGame(GameState gameState)
         {
-
+            GivePlayerStats(new Player());
         }
-
 
         private void GivePlayerStats(Player player)
         {
 
         }
-
     }
 }

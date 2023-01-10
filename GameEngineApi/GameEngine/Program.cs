@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using GameEngine.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<GameEngineContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("GameEngineContext") ?? throw new InvalidOperationException("Connection string 'GameEngineContext' not found.")));
 
 // Add services to the container.
 

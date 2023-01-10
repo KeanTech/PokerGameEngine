@@ -55,5 +55,16 @@ namespace GameEngine.Core.Managers
 
         }
 
+        public void EndGame(GameState gameState) 
+        {
+            
+        }
+
+
+        private void GivePlayerStats(Player player) 
+        {
+        
+        }
+
     }
 }

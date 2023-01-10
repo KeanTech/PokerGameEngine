@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using GameEngine.Models.Game;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace GameEngine.Data
 {
@@ -13,8 +14,13 @@ namespace GameEngine.Data
             : base(options)
         {
         }
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			modelBuilder
+				.Entity<Player>();
+		}
 
-        public DbSet<GameEngine.Models.Game.User> User { get; set; } = default!;
+		public DbSet<GameEngine.Models.Game.User> User { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Table> Table { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Accessory> Accessory { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Chip> Chip { get; set; } = default!;

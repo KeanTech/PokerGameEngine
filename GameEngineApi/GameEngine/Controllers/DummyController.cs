@@ -55,5 +55,12 @@ namespace GameEngine.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        [Route("AllIn")]
+        public IActionResult AllIn() 
+        {
+            return Ok();
+        }
+
     }
 }

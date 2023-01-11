@@ -37,7 +37,7 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("Call")]
-        public IActionResult Call(CallEvent callEvent) 
+        public IActionResult Call(BetEvent callEvent) 
         {
             return Ok();
         }

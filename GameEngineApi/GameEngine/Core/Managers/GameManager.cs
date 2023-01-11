@@ -80,7 +80,7 @@ namespace GameEngine.Core.Managers
 
         }
 
-        public void PlayerCall(CallEvent callEvent) 
+        public void PlayerCall(BetEvent callEvent) 
         {
             GameState gameState = GetCurrentGame(callEvent.PokerTableId);
 

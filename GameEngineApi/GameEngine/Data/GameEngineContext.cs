@@ -17,8 +17,8 @@ namespace GameEngine.Data
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder
-				.Entity<Player>()
-				.HasNoKey(e => e.Chips);
+				.Entity<Player>();
+				//.HasNoKey(e => e.Chips);
 		}
 
 		public DbSet<GameEngine.Models.Game.User> User { get; set; } = default!;

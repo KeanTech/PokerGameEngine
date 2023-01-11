@@ -62,5 +62,11 @@ namespace GameEngine.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        [Route("Check")]
+        public IActionResult Check() 
+        {
+            return Ok();
+        }
     }
 }

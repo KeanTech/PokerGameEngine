@@ -42,8 +42,15 @@ namespace GameEngine.Controllers
         }
 
         [HttpPut]
-        [Route("")]
+        [Route("Fold")]
         public IActionResult Fold() 
+        {
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("Raise")]
+        public IActionResult Raise() 
         {
             return Ok();
         }

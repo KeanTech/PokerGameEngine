@@ -75,23 +75,6 @@ namespace GameEngine.Core.Managers
             // Update the gamestate in the database
         }
 
-        public void SetPlayerTurn()
-        {
-
-        }
-
-        public void PlayerCall(BetEvent callEvent) 
-        {
-            GameState gameState = GetCurrentGame(callEvent.PokerTableId);
-
-
-        }
-
-        public void PlayerRaise() 
-        {
-            
-        }
-
         public GameState UpdateChipsPool()
         {
             return new GameState();
@@ -148,6 +131,36 @@ namespace GameEngine.Core.Managers
         private void GivePlayerStats(Player player)
         {
 
+        }
+
+        public void SetPlayerTurn(GameState gameState)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PlayerCall(BetEvent betEvent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PlayerRaise(BetEvent betEvent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PlayerAllIn(BetEvent betEvent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PlayerFold(int playerId, string userIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void PlayerCheck(int playerId, string userIdentifier)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using GameEngine.Core.Managers;
-using GameEngine.Models;
+using GameEngine.Models.Events;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameEngine.Controllers

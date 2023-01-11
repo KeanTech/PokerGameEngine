@@ -2,6 +2,7 @@
 using GameEngine.Core.Managers;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Language.Extensions;
 
 namespace GameEngine.Controllers
 {
@@ -9,9 +10,9 @@ namespace GameEngine.Controllers
     [Route("api/[controller]")]
     public class DummyController : Controller
     {
-        private readonly GameManager _gameManager;
+        private readonly IGameManager _gameManager;
 
-        public DummyController(GameManager gameManager) 
+        public DummyController(IGameManager gameManager) 
         {
             _gameManager = gameManager;
         }
@@ -24,5 +25,28 @@ namespace GameEngine.Controllers
 
             return Ok(newGame);
         }
+
+        [HttpPut]
+        [Route("GiveCards")]
+        public IActionResult GiveCards(GameState gameState) 
+        {
+           GameState newGameState = _gameManager.GiveCards(1, gameState);
+           return Ok(newGameState);
+        }
+
+        [HttpPut]
+        [Route("Call")]
+        public IActionResult Call( int playerId, int callAmount) 
+        {
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("")]
+        public IActionResult Fold() 
+        {
+            return Ok();
+        }
+
     }
 }

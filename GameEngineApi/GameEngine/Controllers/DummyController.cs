@@ -1,5 +1,6 @@
 ﻿using GameEngine.Core.Enums;
 using GameEngine.Core.Managers;
+using GameEngine.Models.Events;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Language.Extensions;
@@ -36,7 +37,7 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("Call")]
-        public IActionResult Call( int playerId, int callAmount) 
+        public IActionResult Call(CallEvent callEvent) 
         {
             return Ok();
         }

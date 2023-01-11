@@ -18,6 +18,36 @@ namespace GameEngine.Controllers
             _gameManager = gameManager;
         }
 
+        private bool DoesPlayerExistOnTable(GameState gameState, int playerId) 
+        {
+            Player? player = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == playerId);
+        
+            if(player == null)
+                return false;
+
+            return true;
+        }
+        private bool IsValidGameState(GameState gameState) 
+        {
+            if(gameState == null)
+                return false;
+
+            if(gameState.PokerTable == null)
+                return false;
+
+            if(gameState.PokerTable.Id == 0)
+                return false;
+
+            if(gameState.PokerTable.Players == null)
+                return false;
+
+            if(gameState.PokerTable.Players.Count < 1)
+                return false;
+
+            return true;   
+        }
+
+
         [HttpGet]
         [Route("CreateNewGame")]
         public IActionResult Index()
@@ -37,8 +67,16 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("Call")]
-        public IActionResult Call(BetEvent callEvent) 
+        public IActionResult Call(BetEvent betEvent) 
         {
+            GameState gameState = new GameState(); /// Get gameState from service with <see cref="BetEvent.PokerTableId"/>
+
+            if (IsValidGameState(gameState) == false)
+                return BadRequest();
+
+            if (DoesPlayerExistOnTable(gameState, betEvent.PlayerId))
+                return NotFound();
+
             return Ok();
         }
 
@@ -55,12 +93,10 @@ namespace GameEngine.Controllers
         {
             GameState gameState = new GameState(); /// Get gameState from service with <see cref="BetEvent.PokerTableId"/>
 
-            if (gameState == null || gameState.PokerTable == null || gameState.PokerTable.Id == 0)
+            if (IsValidGameState(gameState) == false)
                 return BadRequest();
             
-            Player? playerThatTookTheTurn = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == betEvent.PlayerId);
-
-            if (playerThatTookTheTurn == null)
+            if (DoesPlayerExistOnTable(gameState, betEvent.PlayerId))
                 return NotFound();
             
             
@@ -71,6 +107,14 @@ namespace GameEngine.Controllers
         [Route("AllIn")]
         public IActionResult AllIn(BetEvent betEvent) 
         {
+            GameState gameState = new GameState(); /// Get gameState from service with <see cref="BetEvent.PokerTableId"/>
+
+            if (IsValidGameState(gameState) == false)
+                return BadRequest();
+
+            if (DoesPlayerExistOnTable(gameState, betEvent.PlayerId))
+                return NotFound();
+
             return Ok();
         }
 

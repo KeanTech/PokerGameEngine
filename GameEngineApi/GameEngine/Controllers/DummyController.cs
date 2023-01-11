@@ -53,6 +53,17 @@ namespace GameEngine.Controllers
         [Route("Raise")]
         public IActionResult Raise(BetEvent betEvent) 
         {
+            GameState gameState = new GameState(); /// Get gameState from service with <see cref="BetEvent.PokerTableId"/>
+
+            if (gameState == null || gameState.PokerTable == null || gameState.PokerTable.Id == 0)
+                return BadRequest();
+            
+            Player? playerThatTookTheTurn = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == betEvent.PlayerId);
+
+            if (playerThatTookTheTurn == null)
+                return NotFound();
+            
+            
             return Ok();
         }
 

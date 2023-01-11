@@ -44,7 +44,7 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("Fold")]
-        public IActionResult Fold() 
+        public IActionResult Fold(int playerId) 
         {
             return Ok();
         }

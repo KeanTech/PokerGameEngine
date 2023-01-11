@@ -51,14 +51,14 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("Raise")]
-        public IActionResult Raise() 
+        public IActionResult Raise(BetEvent betEvent) 
         {
             return Ok();
         }
 
         [HttpPut]
         [Route("AllIn")]
-        public IActionResult AllIn() 
+        public IActionResult AllIn(BetEvent betEvent) 
         {
             return Ok();
         }

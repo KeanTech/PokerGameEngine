@@ -120,7 +120,7 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("Check")]
-        public IActionResult Check() 
+        public IActionResult Check(int playerId, string userIdentifier) 
         {
             return Ok();
         }

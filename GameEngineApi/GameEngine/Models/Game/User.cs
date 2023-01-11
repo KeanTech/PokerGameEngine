@@ -8,5 +8,6 @@
         public int Wins { get; set; }
         public List<Accessory> Accessories { get; set; }
         public int ChipsAquired { get; set; }
+        public int TableId { get; set; }
     }
 }

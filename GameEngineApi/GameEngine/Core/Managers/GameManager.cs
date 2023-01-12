@@ -1,7 +1,6 @@
 ﻿using GameEngine.Core.Enums;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
-using Microsoft.AspNetCore.Razor.Language.Extensions;
 
 namespace GameEngine.Core.Managers
 {
@@ -147,6 +146,36 @@ namespace GameEngine.Core.Managers
 
             gameState.CurrentPlayerId = nextPlayer.Id;
             gameState.PlayerIdentifier = nextPlayer.UserIdentifier;
+        }
+
+
+        /// <summary>
+        /// Made for test reasons
+        /// </summary>
+        /// <param name="betEvent"></param>
+        /// <param name="betEventType"></param>
+        /// <returns></returns>
+        public bool PlayerBet(BetEvent betEvent, string betEventType) 
+        {
+            bool validBet = false;
+            
+            switch (betEventType)
+            {
+                case "Call":
+                    validBet = PlayerCall(betEvent);
+                    return validBet;    
+
+                case "Raise":
+                    validBet = PlayerRaise(betEvent);
+                    return validBet;
+
+                case "AllIn":
+                    validBet = PlayerAllIn(betEvent);
+                    return validBet;
+
+                default:
+                    return validBet;
+            }
         }
 
         public bool PlayerCall(BetEvent betEvent)

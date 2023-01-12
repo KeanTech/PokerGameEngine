@@ -61,8 +61,8 @@ namespace GameEngine.Core.Managers
         bool PlayerCall(BetEvent betEvent);
         bool PlayerRaise(BetEvent betEvent);
         bool PlayerAllIn(BetEvent betEvent);
-        bool PlayerFold(int playerId, string userIdentifier);
-        bool PlayerCheck(int playerId, string userIdentifier);
+        bool PlayerFold(TurnEvent turnEvent);
+        bool PlayerCheck(TurnEvent turnEvent);
 
 
     }

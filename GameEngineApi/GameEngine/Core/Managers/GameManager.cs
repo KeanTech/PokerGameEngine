@@ -44,7 +44,7 @@ namespace GameEngine.Core.Managers
 
             GameState gameState = new GameState()
             {
-                PokerTable = new Table() 
+                PokerTable = new PokerTable() 
                 { 
                     Players = new List<Player>() 
                     { 

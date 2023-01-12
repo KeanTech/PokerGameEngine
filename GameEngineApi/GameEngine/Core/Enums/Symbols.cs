@@ -2,9 +2,9 @@
 {
     public enum Symbols
     {
-        Heart,
         Spade,
-        Club,
-        Diamond
+        Heart,
+        Diamond,
+        Club
     }
 }

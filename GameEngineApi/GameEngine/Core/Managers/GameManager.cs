@@ -161,7 +161,7 @@ namespace GameEngine.Core.Managers
             gameState.PlayerIdentifier = nextPlayer.UserIdentifier;
         }
 
-        public void PlayerCall(BetEvent betEvent)
+        public bool PlayerCall(BetEvent betEvent)
         {
             GameState gameState = new GameState();
             Player? player = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == betEvent.PlayerId);
@@ -173,25 +173,28 @@ namespace GameEngine.Core.Managers
                 
                 // Remove betAmount from chips value
                 // Add bet to table
+                return true;
             }
+
+            return false;
         }
 
-        public void PlayerRaise(BetEvent betEvent)
+        public bool PlayerRaise(BetEvent betEvent)
         {
             throw new NotImplementedException();
         }
 
-        public void PlayerAllIn(BetEvent betEvent)
+        public bool PlayerAllIn(BetEvent betEvent)
         {
             throw new NotImplementedException();
         }
 
-        public void PlayerFold(int playerId, string userIdentifier)
+        public bool PlayerFold(int playerId, string userIdentifier)
         {
             throw new NotImplementedException();
         }
 
-        public void PlayerCheck(int playerId, string userIdentifier)
+        public bool PlayerCheck(int playerId, string userIdentifier)
         {
             throw new NotImplementedException();
         }

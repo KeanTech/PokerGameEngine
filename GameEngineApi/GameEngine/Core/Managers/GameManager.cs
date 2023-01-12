@@ -92,22 +92,17 @@ namespace GameEngine.Core.Managers
             // Update the gamestate in the database
         }
 
-        public GameState UpdateChipsPool()
+        public GameState UpdateChipsPool(GameState gameState)
         {
             return new GameState();
         }
 
-        public GameState ResetPlayerBet()
+        public GameState ResetPlayerBet(Player player)
         {
             return new GameState();
         }
 
-        /// <summary>
-        /// This method will update the gameState so that players have cards in their card List 
-        /// </summary>
-        /// <param name="amountOfCards"></param>
-        /// <param name="gameState"></param>
-        /// <returns></returns>
+        
         public GameState GiveCards(int amountOfCards, GameState gameState)
         {
             for (int i = 0; i < 2; i++)
@@ -121,20 +116,13 @@ namespace GameEngine.Core.Managers
             return gameState;
         }
 
-        /// <summary>
-        /// This method clears the Table pool, playercards, playerBets, and tableCards
-        /// </summary>
-        /// <returns></returns>
+        
         public GameState ClearTable()
         {
             return new GameState();
         }
 
-        /// <summary>
-        /// This method will generate a new deck for the table
-        /// </summary>
-        /// <param name="gameState"></param>
-        /// <returns></returns>
+        
         public GameState GetNewCardDeck(GameState gameState)
         {
             return new GameState();

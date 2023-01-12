@@ -51,20 +51,18 @@ namespace GameEngine.Core.Managers
             HighestCard = sortedCards.ElementAt(sortedCards.Count - 1);
 
             //Looks at current card, next card, and looks for duplicate cards or sequences of cards
-            for (int i = 0; i < sortedCards.Count - 1; i++)
+            for (int i = 0; i < sortedCards.Count; i++)
             {
 
 
-                CurrentCardValue = sortedCards[i].Type;
-                CurrentCardSymbol = sortedCards[i].Symbol;
+                if (i != sortedCards.Count - 1)
+                {
+                    CurrentCardValue = sortedCards[i].Type;
+                    CurrentCardSymbol = sortedCards[i].Symbol;
 
-                //if (i != sortedCards.Count - 1)
-                //{
-
-                NextCardValue = sortedCards[i + 1].Type;
-                NextCardSymbol = sortedCards[i + 1].Symbol;
-                //}
-
+                    NextCardValue = sortedCards[i + 1].Type;
+                    NextCardSymbol = sortedCards[i + 1].Symbol;
+                }
 
                 //Checks for duplicate card values
                 if (CurrentCardValue == NextCardValue)
@@ -77,12 +75,21 @@ namespace GameEngine.Core.Managers
                 //Checks for a card sequence, example: 7,8 or 4,5
                 if (NextCardValue == CurrentCardValue + 1)
                 {
-                    SequenceCounter++;
-                    sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
 
                     if (SequenceCounter <= 2)
                     {
                         sequences.Add(new Card(NextCardValue, NextCardSymbol));
+                    }
+
+                    if (i == sortedCards.Count - 1)
+                    {
+                        sequences.Add(new Card(NextCardValue, NextCardSymbol));
+                    }
+
+                    else
+                    {
+                        SequenceCounter++;
+                        sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
                     }
                 }
 

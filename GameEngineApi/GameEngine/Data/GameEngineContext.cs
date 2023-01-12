@@ -16,13 +16,26 @@ namespace GameEngine.Data
         }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder
-				.Entity<Player>();
+			base.OnModelCreating(modelBuilder);
+
+			modelBuilder.Entity<Gametable>()
+				.HasMany(g => g.Cards)
+				.WithMany(c => c.Gametables);
+
+			modelBuilder.Entity<Gametable>()
+				.HasMany(g => g.CardDeck)
+				.WithMany(c => c.Gametables);
+
+			modelBuilder.Entity<Player>()
+				.HasOne(p => p.Gametable)
+				.WithMany(g => g.Players);
+				
+		
 		}
 
 		public DbSet<GameEngine.Models.Game.User> User { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Player> Player { get; set; } = default!;
-		public DbSet<GameEngine.Models.Game.Table> Table { get; set; } = default!;
+		public DbSet<GameEngine.Models.Game.Gametable> Table { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Accessory> Accessory { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Chip> Chip { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Card> Card { get; set; } = default!;

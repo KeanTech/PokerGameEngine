@@ -1,65 +1,55 @@
-﻿using System.Text.Json.Serialization;
+﻿using GameEngine.Core.Managers;
+using GameEngine.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using WebHookService;
-using WebHookService.Models;
-using WebHookService.Models.Events;
 
 namespace GameEngine.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class GameController : Controller
     {
-	    private WebHookService.WebhookService _service;
-	    public GameController(WebHookService.WebhookService service)
-	    {
-		    _service = service;
-	    }
+        private readonly GameManager _gameManager;
 
-	    [HttpPost]
-        [Route("api/Subscribe")]
-        public IActionResult Subscribe(string callbackUrl, int tableId, string userIdentifier)
-        { ;
-            _service.Subscribe(callbackUrl, userIdentifier, tableId);
+        public GameController(GameManager gameManager) 
+        {
+            _gameManager = gameManager;
+        }
+
+        [HttpPost]
+        [Route("Call")]
+        public IActionResult Call(PlayerEvent playerEvent) 
+        {
+            // Make Webhook logic
             return Ok();
         }
 
         [HttpPost]
-        [Route("api/AddText")]
-        public async Task<IActionResult> AddText(int tableId)
+        [Route("Fold")]
+        public IActionResult Fold() 
         {
-	        var json = JsonConvert.SerializeObject(new PlayerEvent("dmskaldmsa", Event.Fold, 32));
-	        await _service.NotifySubscribers(new PlayerEvent("dmsakldmsad", Event.Fold, 32), tableId);
-	        await _service.NotifySubscribers(new Call(200, 3000, 32, "dsmakldsalkdamdlak"), tableId);
             return Ok();
         }
 
         [HttpPost]
-        [Route("api/Call")]
-        public IActionResult Call([FromBody]Call eventData)
+        [Route("Raise")]
+        public IActionResult Raise() 
         {
-	        return Ok(eventData);
+            return Ok();   
         }
 
         [HttpPost]
-        [Route("api/Fold")]
-        public IActionResult Fold([FromBody] PlayerEvent eventData)
+        [Route("Check")]
+        public IActionResult Check() 
         {
-	        return Ok(eventData);
+            return Ok();
         }
 
         [HttpPost]
-        [Route("api/Check")]
-        public IActionResult Check([FromBody] PlayerEvent eventData)
+        [Route("AllIn")]
+        public IActionResult AllIn() 
         {
-	        return Ok(eventData);
+            return Ok();
         }
 
-		[HttpPost]
-        [Route("api/AllIn")]
-        public IActionResult AllIn([FromBody] AllIn eventData)
-        {
-	        return Ok(eventData);
-        }
-	}
+    }
 }

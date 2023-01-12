@@ -58,7 +58,12 @@ namespace GameEngine.Core.Managers
 
             return gameState;   
         }
+        private int GetHighestBet(List<Player> players) 
+        {
+            int highestBet = players.Max(x => x.CurrentBet);
 
+            return highestBet;
+        }
         private Player? FindNextPlayer(GameState gameState)
         {
             Player? currentPlayer = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == gameState.CurrentPlayerId);
@@ -174,14 +179,30 @@ namespace GameEngine.Core.Managers
         public bool PlayerTurnEvent(TurnEvent turnEvent, string turnType) 
         {
             GameState gameState = new GameState();
-
             Player? player = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == turnEvent.PlayerId);
-
+            int highestBet = GetHighestBet(gameState.PokerTable.Players);
+            
             if (player != null)
             {
-                // set fold to true on player
+                switch (turnType)
+                {
+                    case "Fold":
+                        player.Folded= true; 
+                        SetPlayerTurn(gameState);
+                        return true;
 
-                return true;
+                    case "Check":
+                        if (player.CurrentBet == highestBet)
+                        { 
+                            SetPlayerTurn(gameState);
+                            return true;
+                        }
+
+                        return false;
+                    
+                    default:
+                        return false;
+                }
             }
 
             return false;

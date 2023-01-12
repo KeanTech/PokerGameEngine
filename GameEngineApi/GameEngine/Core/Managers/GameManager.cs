@@ -60,6 +60,23 @@ namespace GameEngine.Core.Managers
             return gameState;   
         }
 
+        private Player? FindNextPlayer(GameState gameState)
+        {
+            Player? currentPlayer = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == gameState.CurrentPlayerId);
+
+            if (currentPlayer == null)
+                return null;
+
+
+            int playerIndex = gameState.PokerTable.Players.IndexOf(currentPlayer);
+            // make check for fold
+
+            if (playerIndex == gameState.PokerTable.Players.Count - 1)
+                return gameState.PokerTable.Players.First();
+
+            return gameState.PokerTable.Players[playerIndex + 1];
+        }
+
         public GameState GetCurrentGame(int tableId)
         {
             // User GameStateService to get the current game state
@@ -135,12 +152,28 @@ namespace GameEngine.Core.Managers
 
         public void SetPlayerTurn(GameState gameState)
         {
-            throw new NotImplementedException();
+            Player? nextPlayer = FindNextPlayer(gameState);
+            
+            if (nextPlayer == null)
+                return;
+
+            gameState.CurrentPlayerId = nextPlayer.Id;
+            gameState.PlayerIdentifier = nextPlayer.UserIdentifier;
         }
 
         public void PlayerCall(BetEvent betEvent)
         {
-            throw new NotImplementedException();
+            GameState gameState = new GameState();
+            Player? player = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == betEvent.PlayerId);
+
+            if (player != null)
+            {
+                player.CurrentBet = betEvent.BetAmount;
+                SetPlayerTurn(gameState);
+                
+                // Remove betAmount from chips value
+                // Add bet to table
+            }
         }
 
         public void PlayerRaise(BetEvent betEvent)

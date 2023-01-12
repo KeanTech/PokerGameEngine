@@ -66,7 +66,6 @@ namespace GameEngine.Core.Managers
             if (currentPlayer == null)
                 return null;
 
-
             int playerIndex = gameState.PokerTable.Players.IndexOf(currentPlayer);
             // make check for fold
 
@@ -108,7 +107,7 @@ namespace GameEngine.Core.Managers
             {
                 foreach (var player in gameState.PokerTable.Players)
                 {
-                    player.Cards.Add(new Card() { Symbol = Symbols.Club, Type = CardTypes.Two});
+                    player.Cards.Add(_cards.Pop());
                 }
             }
 
@@ -148,7 +147,6 @@ namespace GameEngine.Core.Managers
             gameState.PlayerIdentifier = nextPlayer.UserIdentifier;
         }
 
-
         /// <summary>
         /// Made for test reasons
         /// </summary>
@@ -173,6 +171,11 @@ namespace GameEngine.Core.Managers
             return false;
         }
 
+        public bool PlayerTurnEvent(TurnEvent turnEvent) 
+        {
+            
+        }
+
         public bool PlayerCall(BetEvent betEvent)
         {
             return PlayerBet(betEvent, "Call");
@@ -188,12 +191,12 @@ namespace GameEngine.Core.Managers
             return PlayerBet(betEvent, "AllIn");
         }
 
-        public bool PlayerFold(int playerId, string userIdentifier)
+        public bool PlayerFold(TurnEvent turnEvent)
         {
             
         }
 
-        public bool PlayerCheck(int playerId, string userIdentifier)
+        public bool PlayerCheck(TurnEvent turnEvent)
         {
             
         }

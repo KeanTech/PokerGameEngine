@@ -15,11 +15,11 @@ namespace GameEngine.Core.Managers
         GameState ResetPlayerBet();
         void SetPlayerTurn(GameState gameState);
         GameState UpdateChipsPool();
-        void PlayerCall(BetEvent betEvent);
-        void PlayerRaise(BetEvent betEvent);
-        void PlayerAllIn(BetEvent betEvent);
-        void PlayerFold(int playerId, string userIdentifier);
-        void PlayerCheck(int playerId, string userIdentifier);
+        bool PlayerCall(BetEvent betEvent);
+        bool PlayerRaise(BetEvent betEvent);
+        bool PlayerAllIn(BetEvent betEvent);
+        bool PlayerFold(int playerId, string userIdentifier);
+        bool PlayerCheck(int playerId, string userIdentifier);
 
 
     }

@@ -1,6 +1,6 @@
 ﻿namespace GameEngine.Models.Game
 {
-    public class Table
+    public class PokerTable
     {
         public int Id { get; set; }
         public List<Card> Cards { get; set; }

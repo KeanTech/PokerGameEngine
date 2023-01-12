@@ -155,30 +155,7 @@ namespace GameEngine.Core.Managers
         /// <param name="betEvent"></param>
         /// <param name="betEventType"></param>
         /// <returns></returns>
-        public bool PlayerBet(BetEvent betEvent, string betEventType) 
-        {
-            bool validBet = false;
-            
-            switch (betEventType)
-            {
-                case "Call":
-                    validBet = PlayerCall(betEvent);
-                    return validBet;    
-
-                case "Raise":
-                    validBet = PlayerRaise(betEvent);
-                    return validBet;
-
-                case "AllIn":
-                    validBet = PlayerAllIn(betEvent);
-                    return validBet;
-
-                default:
-                    return validBet;
-            }
-        }
-
-        public bool PlayerCall(BetEvent betEvent)
+        public bool PlayerBet(BetEvent betEvent, string betType) 
         {
             GameState gameState = new GameState();
             Player? player = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == betEvent.PlayerId);
@@ -187,7 +164,7 @@ namespace GameEngine.Core.Managers
             {
                 player.CurrentBet = betEvent.BetAmount;
                 SetPlayerTurn(gameState);
-                
+
                 // Remove betAmount from chips value
                 // Add bet to table
                 return true;
@@ -196,24 +173,29 @@ namespace GameEngine.Core.Managers
             return false;
         }
 
+        public bool PlayerCall(BetEvent betEvent)
+        {
+            return PlayerBet(betEvent, "Call");
+        }
+
         public bool PlayerRaise(BetEvent betEvent)
         {
-            throw new NotImplementedException();
+            return PlayerBet(betEvent, "Raise");
         }
 
         public bool PlayerAllIn(BetEvent betEvent)
         {
-            throw new NotImplementedException();
+            return PlayerBet(betEvent, "AllIn");
         }
 
         public bool PlayerFold(int playerId, string userIdentifier)
         {
-            throw new NotImplementedException();
+            
         }
 
         public bool PlayerCheck(int playerId, string userIdentifier)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

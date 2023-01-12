@@ -1,4 +1,4 @@
-﻿namespace WebHookService.Models.Events
+﻿namespace GameEngine.Core.Services.Webhook.Models.Events
 {
 	public class Call : PlayerEvent
 	{

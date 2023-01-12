@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebHookService.Models.Events
+﻿namespace GameEngine.Core.Services.Webhook.Models.Events
 {
 	public class PlayerEvent : WebhookEvent
 	{

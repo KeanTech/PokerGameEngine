@@ -130,10 +130,10 @@ namespace GameEngine.Core.Managers
 
         public void EndGame(GameState gameState)
         {
-            GivePlayerStats(new Player());
+            GivePlayerStats(new Player() ,gameState);
         }
 
-        private void GivePlayerStats(Player player)
+        private void GivePlayerStats(Player player, GameState gameState)
         {
 
         }

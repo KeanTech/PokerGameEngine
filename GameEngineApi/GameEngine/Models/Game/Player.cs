@@ -11,6 +11,7 @@ namespace GameEngine.Models.Game
         public int CurrentBet { get; set; }
 		public Dictionary<int,int> Chips { get; set; }
         public List<Card> Cards { get; set; }
+        public bool Folded { get; set; }
 
-	}
+    }
 }

@@ -171,9 +171,20 @@ namespace GameEngine.Core.Managers
             return false;
         }
 
-        public bool PlayerTurnEvent(TurnEvent turnEvent) 
+        public bool PlayerTurnEvent(TurnEvent turnEvent, string turnType) 
         {
-            
+            GameState gameState = new GameState();
+
+            Player? player = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == turnEvent.PlayerId);
+
+            if (player != null)
+            {
+                // set fold to true on player
+
+                return true;
+            }
+
+            return false;
         }
 
         public bool PlayerCall(BetEvent betEvent)
@@ -193,12 +204,12 @@ namespace GameEngine.Core.Managers
 
         public bool PlayerFold(TurnEvent turnEvent)
         {
-            
+            return PlayerTurnEvent(turnEvent, "Fold");
         }
 
         public bool PlayerCheck(TurnEvent turnEvent)
         {
-            
+            return PlayerTurnEvent(turnEvent, "Check");
         }
     }
 }

@@ -47,7 +47,8 @@ namespace GameEngine.Core.Managers
             //Checks for the highest card
             HighestCard = cards.ElementAt(cards.Count - 1);
 
-            CheckForFullHouse(cards);
+            IsStraight(cards);
+            //CheckForFullHouse(cards);
             //CheckForThreeOfAKind(cards);
             //CheckForTwoPairs(cards);
             //CheckForOnePair(cards);
@@ -73,23 +74,78 @@ namespace GameEngine.Core.Managers
             IEnumerable<Card> flush = cardsToCheck.GroupBy(x => x.Symbol).Where(x => x.Count() == 5).First();
         }
 
-        private void IsStraight(List<Card> cardsToCheck)
-        {
-            
-        }
 
         private void CheckForHighestCard(List<Card> cards)
         {
             HighestCard = cards.OrderBy(x => x.Type).ElementAt(cards.Count - 1);
         }
 
+        private void IsStraight(List<Card> cards)
+        {
+            List<Card> sequencesCards = CheckForSequences(cards);
+        }
 
-        private void CheckForFullHouse(List<Card> cards)
+        private List<Card> CheckForSequences(List<Card> cards)
+        {
+            List<Card> sequences = new List<Card>();
+            cards = cards.OrderBy(x => x.Type).ToList();
+
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (i != cards.Count - 1)
+                {
+                    CurrentCardValue = cards[i].Type;
+                    CurrentCardSymbol = cards[i].Symbol;
+
+                    NextCardValue = cards[i + 1].Type;
+                    NextCardSymbol = cards[i + 1].Symbol;
+                }
+
+                //Checks for a card sequence, example: 7, 8 or 4, 5
+                if (NextCardValue == CurrentCardValue + 1)
+                {
+                    SequenceCounter++;
+                    //If its a start of a sequence
+
+                    //If the sequence ends on the last cards in the list
+                    if (i == cards.Count - 1)
+                    {
+                        sequences.Add(new Card(NextCardValue, NextCardSymbol));
+                    }
+
+                    else
+                    {
+                        sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
+                        if (SequenceCounter <= 2)
+                        {
+                            sequences.Add(new Card(NextCardValue, NextCardSymbol));
+                        }
+                    }
+                }
+            }
+            return sequences;
+        }
+
+        private bool CheckForFullHouse(List<Card> cards)
         {
             IEnumerable<Card> threeOfAKind = cards.GroupBy(x => x.Type).FirstOrDefault(x => x.Count() == 3);
             if (threeOfAKind != null)
             {
-                var remainingPair = cards.Where(x => !threeOfAKind.Any(y => x.Type == y.Type));
+                var remainingCards = cards.Where(x => !threeOfAKind.Any(y => x.Type == y.Type));
+                IEnumerable<Card> pair = remainingCards.GroupBy(x => x.Type).Where(x => x.Count() >= 2).OrderByDescending(y => y.Key).FirstOrDefault();
+                if (pair != null)
+                {
+                    HandValue = PokerHand.FullHouse;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
             }
         }
 

@@ -25,7 +25,7 @@ namespace GameEngine.Controllers
                 },
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Ace,
+                    Type = Core.Enums.CardTypes.Two,
                     Symbol= Core.Enums.Symbols.Heart,
                 }
             };
@@ -38,7 +38,7 @@ namespace GameEngine.Controllers
                 },
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Ten,
+                    Type = Core.Enums.CardTypes.Eight,
                     Symbol = Core.Enums.Symbols.Spade,
                 },
                 new Card()
@@ -48,7 +48,7 @@ namespace GameEngine.Controllers
                 },
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Pawn,
+                    Type = Core.Enums.CardTypes.Queen,
                     Symbol = Core.Enums.Symbols.Spade,
                 },
                 new Card()

@@ -51,7 +51,7 @@ namespace GameEngine.Core.Managers
                         new Player() { Cards = new List<Card>(), Id = 1, Accessories = new List<Accessory>(), ChipValue = 200, Name = "", UserIdentifier = "" },
                         new Player() { Cards = new List<Card>(), Id = 2, Accessories = new List<Accessory>(), ChipValue = 100, Name = "", UserIdentifier = "" }
                     },
-                CardDeck = _cards.ToList(), Cards = new List<Card>(), ChipsValue = 10  },
+                CardDeck = _cards, Cards = new Stack<Card>(), ChipsValue = 10  },
                 CurrentPlayerId = 1,
                 PlayerIdentifier = "Alwjdpawdw1oajdp034"
             };
@@ -112,6 +112,8 @@ namespace GameEngine.Core.Managers
                 player.Cards.Clear();
             }
 
+            UpdateGameState(gameState);
+
             return gameState;
         }
         public GameState ResetPlayerBets(GameState gameState)
@@ -121,7 +123,7 @@ namespace GameEngine.Core.Managers
                 player.CurrentBet = 0;
             }
 
-            // update GameState via service
+            UpdateGameState(gameState);
 
             return gameState;
         }
@@ -132,14 +134,15 @@ namespace GameEngine.Core.Managers
             {
                 foreach (var player in gameState.PokerTable.Players)
                 {
-                    player.Cards.Add(_cards.Pop());
+                    player.Cards.Add(gameState.PokerTable.CardDeck.Pop());
                 }
             }
+
+            UpdateGameState(gameState); 
 
             return gameState;
         }
 
-        
         public GameState ClearTable(GameState gameState)
         {
             gameState.PokerTable.Cards.Clear();
@@ -149,9 +152,10 @@ namespace GameEngine.Core.Managers
             RemovePlayerCards(gameState);
             ResetPlayerBets(gameState);
 
+            UpdateGameState(gameState);
+
             return gameState;
         }
-
         
         public GameState GetNewCardDeck(GameState gameState)
         {
@@ -199,11 +203,16 @@ namespace GameEngine.Core.Managers
 
             if (player != null)
             {
+                if (player.ChipValue < betEvent.BetAmount)
+                    return false;
+
                 player.CurrentBet = betEvent.BetAmount;
+                player.ChipValue -= betEvent.BetAmount;
+
+                gameState.PokerTable.ChipsValue += betEvent.BetAmount;
+
                 SetPlayerTurn(gameState);
 
-                // Remove betAmount from chips value
-                // Add bet to table
                 return true;
             }
 

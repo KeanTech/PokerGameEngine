@@ -3,7 +3,6 @@ using GameEngine.Core.Managers;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.Language.Extensions;
 
 namespace GameEngine.Controllers
 {
@@ -12,7 +11,7 @@ namespace GameEngine.Controllers
     public class DummyController : Controller
     {
         private readonly IGameManager _gameManager;
-
+        private static GameState? _gameState;
         public DummyController(IGameManager gameManager) 
         {
             _gameManager = gameManager;
@@ -52,9 +51,10 @@ namespace GameEngine.Controllers
         [Route("CreateNewGame")]
         public IActionResult Index()
         {
-            var newGame = _gameManager.StartNewGame(1);
+            if(_gameState == null)
+                _gameState = _gameManager.StartNewGame(1);
 
-            return Ok(newGame);
+            return Ok(_gameState);
         }
 
         [HttpPut]
@@ -69,13 +69,15 @@ namespace GameEngine.Controllers
         [Route("Call")]
         public IActionResult Call(BetEvent betEvent) 
         {
-            GameState gameState = new GameState(); /// Get gameState from service with <see cref="BetEvent.PokerTableId"/>
+            //GameState gameState = new GameState(); /// Get gameState from service with <see cref="BetEvent.PokerTableId"/>
 
-            if (IsValidGameState(gameState) == false)
+            if (IsValidGameState(_gameState) == false)
                 return BadRequest();
 
-            if (DoesPlayerExistOnTable(gameState, betEvent.PlayerId))
+            if (DoesPlayerExistOnTable(_gameState, betEvent.PlayerId))
                 return NotFound();
+
+
 
             return Ok();
         }

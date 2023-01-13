@@ -29,7 +29,7 @@ namespace GameEngine.Controllers
 
         [HttpPost]
         [Route("Call")]
-        public IActionResult Call(PlayerEvent playerEvent) 
+        public IActionResult Call(BetEvent betEvent) 
         {
             // Make Webhook logic
             return Ok();

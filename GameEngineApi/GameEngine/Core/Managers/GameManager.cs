@@ -105,6 +105,15 @@ namespace GameEngine.Core.Managers
             return gameState;
         }
 
+        public GameState RemovePlayerCards(GameState gameState)
+        {
+            foreach (var player in gameState.PokerTable.Players)
+            {
+                player.Cards.Clear();
+            }
+
+            return gameState;
+        }
         public GameState ResetPlayerBets(GameState gameState)
         {
             foreach (var player in gameState.PokerTable.Players)
@@ -135,29 +144,35 @@ namespace GameEngine.Core.Managers
         {
             gameState.PokerTable.Cards.Clear();
             gameState.PokerTable.CardDeck.Clear();
+            gameState.PokerTable.ChipsValue = 0;
 
-            foreach (var item in )
-            {
+            RemovePlayerCards(gameState);
+            ResetPlayerBets(gameState);
 
-            }
-
-
+            return gameState;
         }
 
         
         public GameState GetNewCardDeck(GameState gameState)
         {
+            List<Card> cards = new List<Card>();
+            _cards = new Stack<Card>(cards);
+            gameState.PokerTable.Cards = _cards;
+
             return new GameState();
         }
 
         public void EndGame(GameState gameState)
         {
-            GivePlayerStats(new Player() ,gameState);
+            GivePlayerStats(new Player());
         }
 
-        private void GivePlayerStats(Player player, GameState gameState)
+        private void GivePlayerStats(Player player)
         {
+            player.Wins++;
+            player.ChipsAquired += player.ChipValue;
 
+            // save player(User)
         }
 
         public void SetPlayerTurn(GameState gameState)

@@ -25,7 +25,7 @@ namespace GameEngine.Data
 
 			//Table card relations
 			modelBuilder.Entity<TableCard>()
-				.HasOne<Gametable>(tc => tc.Gametable)
+				.HasOne<PokerTable>(tc => tc.PokerTable)
 				.WithMany(t => t.Cards)
 				.HasForeignKey(tc => tc.TableId);
 
@@ -36,7 +36,7 @@ namespace GameEngine.Data
 
 			//Deck cards relations
 			modelBuilder.Entity<DeckCard>()
-				.HasOne<Gametable>(tc => tc.Table)
+				.HasOne<PokerTable>(tc => tc.PokerTable)
 				.WithMany(t => t.CardDeck)
 				.HasForeignKey(tc => tc.TableId);
 
@@ -63,7 +63,7 @@ namespace GameEngine.Data
 
 		public DbSet<GameEngine.Models.Game.User> User { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Player> Player { get; set; } = default!;
-		public DbSet<GameEngine.Models.Game.Gametable> Table { get; set; } = default!;
+		public DbSet<GameEngine.Models.Game.PokerTable> Table { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Accessory> Accessory { get; set; } = default!;
 		public DbSet<GameEngine.Models.Game.Card> Card { get; set; } = default!;
 		public DbSet<PlayerCard> PlayerCards { get; set; } = default!;

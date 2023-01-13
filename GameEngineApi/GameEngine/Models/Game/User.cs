@@ -10,6 +10,6 @@ namespace GameEngine.Models.Game
         public int Wins { get; set; }
         public List<Accessory> Accessories { get; set; }
         public int ChipsAquired { get; set; }
-        public virtual Player Player { get; set; }
+        public Player Player { get; set; }
     }
 }

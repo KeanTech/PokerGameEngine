@@ -16,9 +16,5 @@ namespace GameEngine.Models.Game
         public IList<PlayerCard> Cards { get; set; }
 		public bool IsFolded { get; set; }
 
-		// public Gametable Gametable { get; set; }
-		// public virtual User User { get; set; }
-
-
     }
 }

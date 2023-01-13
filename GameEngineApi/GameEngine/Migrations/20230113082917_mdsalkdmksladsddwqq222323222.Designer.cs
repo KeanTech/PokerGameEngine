@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameEngine.Migrations
 {
     [DbContext(typeof(GameEngineContext))]
-    [Migration("20230112085114_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230113082917_mdsalkdmksladsddwqq222323222")]
+    partial class mdsalkdmksladsddwqq222323222
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,26 +24,19 @@ namespace GameEngine.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("GameEngine.Models.Game.Accessory", b =>
+            modelBuilder.Entity("GameEngine.Data.PlayerCard", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("CardId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
+                    b.Property<int>("PlayerId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("CardId", "PlayerId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("PlayerId");
 
-                    b.ToTable("Accessory");
+                    b.ToTable("PlayerCards");
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.Card", b =>
@@ -54,15 +47,6 @@ namespace GameEngine.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("GametableId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("GametableId1")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PlayerId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Symbol")
                         .HasColumnType("int");
 
@@ -71,29 +55,22 @@ namespace GameEngine.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GametableId");
-
-                    b.HasIndex("GametableId1");
-
-                    b.HasIndex("PlayerId");
-
                     b.ToTable("Card");
                 });
 
-            modelBuilder.Entity("GameEngine.Models.Game.Chip", b =>
+            modelBuilder.Entity("GameEngine.Models.Game.DeckCard", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("CardId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("Value")
+                    b.Property<int>("TableId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("CardId", "TableId");
 
-                    b.ToTable("Chip");
+                    b.HasIndex("TableId");
+
+                    b.ToTable("DeckCards");
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.Gametable", b =>
@@ -115,7 +92,10 @@ namespace GameEngine.Migrations
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("Chips")
                         .HasColumnType("int");
@@ -123,7 +103,7 @@ namespace GameEngine.Migrations
                     b.Property<int>("CurrentBet")
                         .HasColumnType("int");
 
-                    b.Property<int>("GametableId")
+                    b.Property<int?>("GametableId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsFolded")
@@ -139,73 +119,92 @@ namespace GameEngine.Migrations
                     b.ToTable("Player");
                 });
 
-            modelBuilder.Entity("GameEngine.Models.Game.User", b =>
+            modelBuilder.Entity("GameEngine.Models.Game.TableCard", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("CardId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("ChipsAquired")
+                    b.Property<int>("TableId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.HasKey("CardId", "TableId");
 
-                    b.Property<string>("UserIdentifier")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.HasIndex("TableId");
 
-                    b.Property<int>("Wins")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
+                    b.ToTable("TableCards");
                 });
 
-            modelBuilder.Entity("GameEngine.Models.Game.Accessory", b =>
+            modelBuilder.Entity("GameEngine.Data.PlayerCard", b =>
                 {
-                    b.HasOne("GameEngine.Models.Game.User", null)
-                        .WithMany("Accessories")
-                        .HasForeignKey("UserId")
+                    b.HasOne("GameEngine.Models.Game.Card", "Card")
+                        .WithMany("Players")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("GameEngine.Models.Game.Player", "Player")
+                        .WithMany("Cards")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.DeckCard", b =>
+                {
+                    b.HasOne("GameEngine.Models.Game.Card", "Card")
+                        .WithMany("Decks")
+                        .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("GameEngine.Models.Game.Card", b =>
-                {
-                    b.HasOne("GameEngine.Models.Game.Gametable", null)
+                    b.HasOne("GameEngine.Models.Game.Gametable", "Table")
                         .WithMany("CardDeck")
-                        .HasForeignKey("GametableId");
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("GameEngine.Models.Game.Gametable", null)
-                        .WithMany("Cards")
-                        .HasForeignKey("GametableId1");
+                    b.Navigation("Card");
 
-                    b.HasOne("GameEngine.Models.Game.Player", null)
-                        .WithMany("Cards")
-                        .HasForeignKey("PlayerId");
+                    b.Navigation("Table");
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
-                    b.HasOne("GameEngine.Models.Game.Gametable", "Gametable")
+                    b.HasOne("GameEngine.Models.Game.Gametable", null)
                         .WithMany("Players")
-                        .HasForeignKey("GametableId")
+                        .HasForeignKey("GametableId");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.TableCard", b =>
+                {
+                    b.HasOne("GameEngine.Models.Game.Card", "Card")
+                        .WithMany("Tables")
+                        .HasForeignKey("CardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GameEngine.Models.Game.User", "User")
-                        .WithOne("Player")
-                        .HasForeignKey("GameEngine.Models.Game.Player", "Id")
+                    b.HasOne("GameEngine.Models.Game.Gametable", "Gametable")
+                        .WithMany("Cards")
+                        .HasForeignKey("TableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Card");
 
                     b.Navigation("Gametable");
+                });
 
-                    b.Navigation("User");
+            modelBuilder.Entity("GameEngine.Models.Game.Card", b =>
+                {
+                    b.Navigation("Decks");
+
+                    b.Navigation("Players");
+
+                    b.Navigation("Tables");
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.Gametable", b =>
@@ -220,14 +219,6 @@ namespace GameEngine.Migrations
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
                     b.Navigation("Cards");
-                });
-
-            modelBuilder.Entity("GameEngine.Models.Game.User", b =>
-                {
-                    b.Navigation("Accessories");
-
-                    b.Navigation("Player")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

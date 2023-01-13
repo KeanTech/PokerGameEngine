@@ -1,6 +1,7 @@
 ﻿using GameEngine.Core.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using GameEngine.Data;
 
 namespace GameEngine.Models.Game
 {
@@ -10,7 +11,8 @@ namespace GameEngine.Models.Game
         public Symbols Symbol { get; set; }
         public CardTypes Type { get; set; }
 
-        public List<Gametable> Gametables{ get; set; }
-		public List<Player> Players { get; set; }
+		public IList<PlayerCard> Players { get; set; }
+        public IList<TableCard> Tables { get; set; }
+        public IList<DeckCard> Decks { get; set; }
 	}
 }

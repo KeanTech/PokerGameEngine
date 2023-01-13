@@ -19,7 +19,7 @@ namespace GameEngine.Core.Managers
         /// This method clears the Table pool, playercards, playerBets, and tableCards
         /// </summary>
         /// <returns></returns>
-        GameState ClearTable();
+        GameState ClearTable(GameState gameState);
 
         /// <summary>
         /// Needs a valid GameState to use this method
@@ -55,9 +55,10 @@ namespace GameEngine.Core.Managers
         /// 
         /// </summary>
         /// <returns></returns>
-        GameState ResetPlayerBet(Player player);
+        GameState ResetPlayerBets(GameState gameState);
         void SetPlayerTurn(GameState gameState);
-        GameState UpdateChipsPool(GameState gameState);
+        GameState UpdateChipsPool(GameState gameState, int updateValue);
+        GameState UpdateGameState(GameState gameState);
         bool PlayerCall(BetEvent betEvent);
         bool PlayerRaise(BetEvent betEvent);
         bool PlayerAllIn(BetEvent betEvent);

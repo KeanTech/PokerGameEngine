@@ -48,10 +48,10 @@ namespace GameEngine.Core.Managers
                 { 
                     Players = new List<Player>() 
                     { 
-                        new Player() { Cards = new List<Card>(), Id = 1, Accessories = new List<Accessory>(), Chips = new Dictionary<int, int>(), Name = 12, UserIdentifier = "" },
-                        new Player() { Cards = new List<Card>(), Id = 2, Accessories = new List<Accessory>(), Chips = new Dictionary<int, int>(), Name = 15, UserIdentifier = "" }
+                        new Player() { Cards = new List<Card>(), Id = 1, Accessories = new List<Accessory>(), ChipValue = 200, Name = "", UserIdentifier = "" },
+                        new Player() { Cards = new List<Card>(), Id = 2, Accessories = new List<Accessory>(), ChipValue = 100, Name = "", UserIdentifier = "" }
                     },
-                CardDeck = _cards.ToList(), Cards = new List<Card>(), Chips = new Dictionary<int, int>()  },
+                CardDeck = _cards.ToList(), Cards = new List<Card>(), ChipsValue = 10  },
                 CurrentPlayerId = 1,
                 PlayerIdentifier = "Alwjdpawdw1oajdp034"
             };
@@ -90,22 +90,33 @@ namespace GameEngine.Core.Managers
             return new GameState();
         } 
 
-        public void UpdateGameState(GameState gameState)
+        public GameState UpdateGameState(GameState gameState)
         {
             // Update the gamestate in the database
+
+            return gameState;
         }
 
-        public GameState UpdateChipsPool(GameState gameState)
+        public GameState UpdateChipsPool(GameState gameState, int updateValue)
         {
-            return new GameState();
+            gameState.PokerTable.ChipsValue += updateValue;
+            UpdateGameState(gameState);
+            
+            return gameState;
         }
 
-        public GameState ResetPlayerBet(Player player)
+        public GameState ResetPlayerBets(GameState gameState)
         {
-            return new GameState();
+            foreach (var player in gameState.PokerTable.Players)
+            {
+                player.CurrentBet = 0;
+            }
+
+            // update GameState via service
+
+            return gameState;
         }
 
-        
         public GameState GiveCards(int amountOfCards, GameState gameState)
         {
             for (int i = 0; i < 2; i++)
@@ -120,9 +131,17 @@ namespace GameEngine.Core.Managers
         }
 
         
-        public GameState ClearTable()
+        public GameState ClearTable(GameState gameState)
         {
-            return new GameState();
+            gameState.PokerTable.Cards.Clear();
+            gameState.PokerTable.CardDeck.Clear();
+
+            foreach (var item in )
+            {
+
+            }
+
+
         }
 
         

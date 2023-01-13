@@ -1,4 +1,6 @@
 ﻿using GameEngine.Core.Managers;
+using GameEngine.Core.Services.Webhook;
+using GameEngine.Core.Services.Webhook.Models.Events;
 using GameEngine.Models.Events;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +11,20 @@ namespace GameEngine.Controllers
     public class GameController : Controller
     {
         private readonly GameManager _gameManager;
+        private readonly IWebhookService _service;
 
-        public GameController(GameManager gameManager) 
+        public GameController(IWebhookService service) 
         {
-            _gameManager = gameManager;
+            _service = service;
+        }
+
+        [HttpPost]
+        [Route("Subscribe")]
+        public IActionResult Subscribe(string callbackUrl, string userIdentifier, int tableId)
+        {
+	        // Make Webhook logic
+            _service.Subscribe(callbackUrl, userIdentifier, tableId);
+	        return Ok();
         }
 
         [HttpPost]
@@ -32,7 +44,7 @@ namespace GameEngine.Controllers
 
         [HttpPost]
         [Route("Raise")]
-        public IActionResult Raise() 
+        public IActionResult Raise(Raise playerEvent) 
         {
             return Ok();   
         }

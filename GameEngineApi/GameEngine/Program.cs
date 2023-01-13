@@ -1,3 +1,4 @@
+using GameEngine.Core.Services.Webhook;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using GameEngine.Data;
@@ -6,6 +7,10 @@ using GameEngine.Core.Managers;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<GameEngineContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("GameEngineContext") ?? throw new InvalidOperationException("Connection string 'GameEngineContext' not found.")));
+builder.Services.AddDbContext<WebhookContext>(options =>
+	options.UseSqlServer(builder.Configuration.GetConnectionString("WebHookContext") ??
+	                     throw new InvalidOperationException("Connection string 'GameEngineContext' not found.")));
+builder.Services.AddScoped<IWebhookService, WebhookService>();
 
 // Add services to the container.
 

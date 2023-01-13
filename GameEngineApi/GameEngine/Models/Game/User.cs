@@ -1,4 +1,6 @@
-﻿namespace GameEngine.Models.Game
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GameEngine.Models.Game
 {
     public class User
     {
@@ -8,5 +10,6 @@
         public int Wins { get; set; }
         public List<Accessory> Accessories { get; set; }
         public int ChipsAquired { get; set; }
+        public Player Player { get; set; }
     }
 }

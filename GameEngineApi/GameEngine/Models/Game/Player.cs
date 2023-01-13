@@ -10,7 +10,7 @@ namespace GameEngine.Models.Game
     {
 		[ForeignKey("User")]
 		public int Id { get; set; }
-		public int Name { get; set; }
+		public string Name { get; set; }
 		public int CurrentBet { get; set; }
 		public int Chips { get; set; }
         public IList<PlayerCard> Cards { get; set; }

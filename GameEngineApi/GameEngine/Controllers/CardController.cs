@@ -20,12 +20,12 @@ namespace GameEngine.Controllers
             {
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Ace,
+                    Type = Core.Enums.CardTypes.Ten,
                     Symbol = Core.Enums.Symbols.Heart,
                 },
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Ten,
+                    Type = Core.Enums.CardTypes.Ace,
                     Symbol= Core.Enums.Symbols.Heart,
                 }
             };
@@ -33,13 +33,13 @@ namespace GameEngine.Controllers
             {
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Queen,
-                    Symbol = Core.Enums.Symbols.Heart,
+                    Type = Core.Enums.CardTypes.Pawn,
+                    Symbol = Core.Enums.Symbols.Diamond,
                 },
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Five,
-                    Symbol = Core.Enums.Symbols.Club,
+                    Type = Core.Enums.CardTypes.Ten,
+                    Symbol = Core.Enums.Symbols.Spade,
                 },
                 new Card()
                 {

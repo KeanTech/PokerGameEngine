@@ -20,5 +20,5 @@ namespace GameEngine.Models.Game
 		// public virtual User User { get; set; }
 
 
-	}
+    }
 }

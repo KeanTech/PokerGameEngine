@@ -133,7 +133,7 @@ namespace GameEngine.Core.Managers
 
         public GameState GiveCardsToTable(int amountOfCards, GameState gameState) 
         {
-            
+            return new GameState();
         }
 
         public GameState GiveCardsToPlayers(GameState gameState)
@@ -218,7 +218,7 @@ namespace GameEngine.Core.Managers
 
             if (player != null)
             {
-                if (player.ChipValue < betEvent.BetAmount)
+                if (player.ChipsValue < betEvent.BetAmount)
                     return false;
 
                 player.CurrentBet = betEvent.BetAmount;

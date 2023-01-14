@@ -42,22 +42,25 @@ namespace GameEngine.Core.Managers
         {
             // Get table from service/db with table id
 
-            GameState gameState = new GameState()
-            {
-                PokerTable = new PokerTable() 
-                { 
-                    Players = new List<Player>() 
-                    { 
-                        new Player() { Cards = new List<Card>(), Id = 1, Accessories = new List<Accessory>(), ChipValue = 200, Name = "", UserIdentifier = "" },
-                        new Player() { Cards = new List<Card>(), Id = 2, Accessories = new List<Accessory>(), ChipValue = 100, Name = "", UserIdentifier = "" }
-                    },
-                CardDeck = _cards, Cards = new Stack<Card>(), ChipsValue = 10  },
-                CurrentPlayerId = 1,
-                PlayerIdentifier = "Alwjdpawdw1oajdp034"
-            };
+            //GameState gameState = new GameState()
+            //{
+            //    PokerTable = new PokerTable() 
+            //    { 
+            //        Players = new List<Player>() 
+            //        { 
+            //            new Player() { Cards = new List<Card>(), Id = 1, Accessories = new List<Accessory>(), ChipValue = 200, Name = "", UserIdentifier = "" },
+            //            new Player() { Cards = new List<Card>(), Id = 2, Accessories = new List<Accessory>(), ChipValue = 100, Name = "", UserIdentifier = "" }
+            //        },
+            //    CardDeck = _cards, Cards = new Stack<Card>(), ChipsValue = 10  },
+            //    CurrentPlayerId = 1,
+            //    PlayerIdentifier = "Alwjdpawdw1oajdp034"
+            //};
+
+            GameState gameState = new GameState();
 
             return gameState;   
         }
+
         private int GetHighestBet(List<Player> players) 
         {
             int highestBet = players.Max(x => x.CurrentBet);
@@ -171,10 +174,10 @@ namespace GameEngine.Core.Managers
             GivePlayerStats(new Player());
         }
 
-        private void GivePlayerStats(Player player)
+        private void GivePlayerStats(User user)
         {
-            player.Wins++;
-            player.ChipsAquired += player.ChipValue;
+            user.Wins++;
+            user.ChipsAquired += player.ChipValue;
 
             // save player(User)
         }
@@ -230,7 +233,7 @@ namespace GameEngine.Core.Managers
                 switch (turnType)
                 {
                     case "Fold":
-                        player.Folded= true; 
+                        player.IsFolded = true; 
                         SetPlayerTurn(gameState);
                         return true;
 

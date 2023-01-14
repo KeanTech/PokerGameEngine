@@ -1,4 +1,5 @@
 ﻿using GameEngine.Core.Enums;
+using GameEngine.Data;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
 
@@ -6,8 +7,6 @@ namespace GameEngine.Core.Managers
 {
     public class GameManager : IGameManager
     {
-        private readonly WebHook _webHook;
-
         private static Card[] defaultCardDeck = new Card[] 
         {   
             new Card() 
@@ -32,58 +31,44 @@ namespace GameEngine.Core.Managers
             }
         };
         private Stack<Card> _cards = new Stack<Card>(defaultCardDeck);
+        private readonly GameEngineContext _context;
 
-        //public GameManager(WebHook webHook)
-        //{
-        //    _webHook = webHook;
-        //}
-
-        public GameState StartNewGame(int tabelId) 
+        public GameManager(GameEngineContext context) 
         {
-            // Get table from service/db with table id
-
-            //GameState gameState = new GameState()
-            //{
-            //    PokerTable = new PokerTable() 
-            //    { 
-            //        Players = new List<Player>() 
-            //        { 
-            //            new Player() { Cards = new List<Card>(), Id = 1, Accessories = new List<Accessory>(), ChipValue = 200, Name = "", UserIdentifier = "" },
-            //            new Player() { Cards = new List<Card>(), Id = 2, Accessories = new List<Accessory>(), ChipValue = 100, Name = "", UserIdentifier = "" }
-            //        },
-            //    CardDeck = _cards, Cards = new Stack<Card>(), ChipsValue = 10  },
-            //    CurrentPlayerId = 1,
-            //    PlayerIdentifier = "Alwjdpawdw1oajdp034"
-            //};
-
-            GameState gameState = new GameState();
-
-            return gameState;   
+            _context = context;
         }
 
-        private int GetHighestBet(List<Player> players) 
+        public async Task<PokerTable> StartNewGame(PokerTable pokerTable) 
+        {
+            _context.Table.Update(pokerTable);
+            await _context.SaveChangesAsync();
+
+            return pokerTable;   
+        }
+
+        private int GetHighestBet(IList<Player> players) 
         {
             int highestBet = players.Max(x => x.CurrentBet);
 
             return highestBet;
         }
-        private Player? FindNextPlayer(GameState gameState)
+        private Player? FindNextPlayer(PokerTable pokerTable)
         {
-            Player? currentPlayer = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == gameState.CurrentPlayerId);
+            Player? currentPlayer = pokerTable.Players.FirstOrDefault(x => x.Id == pokerTable.CurrentPlayerId);
 
             if (currentPlayer == null)
                 return null;
 
-            int playerIndex = gameState.PokerTable.Players.IndexOf(currentPlayer);
+            int playerIndex = pokerTable.Players.IndexOf(currentPlayer);
             // make check for fold
 
-            if (playerIndex == gameState.PokerTable.Players.Count - 1)
-                return gameState.PokerTable.Players.First();
+            if (playerIndex == pokerTable.Players.Count - 1)
+                return pokerTable.Players.First();
 
-            return gameState.PokerTable.Players[playerIndex + 1];
+            return pokerTable.Players[playerIndex + 1];
         }
 
-        public GameState GetCurrentGame(int tableId)
+        public PokerTable GetCurrentGame(int tableId)
         {
             // User GameStateService to get the current game state
             // this should get called when the gameController get call 
@@ -93,116 +78,120 @@ namespace GameEngine.Core.Managers
             return new GameState();
         } 
 
-        public GameState UpdateGameState(GameState gameState)
+        public async Task<PokerTable> UpdateGameState(PokerTable pokerTable)
         {
-            // Update the gamestate in the database
+            if (pokerTable != null)
+            { 
+                _context.Table.Update(pokerTable);
+                await _context.SaveChangesAsync();
+                return pokerTable;
+            }    
 
-            return gameState;
+            return new PokerTable();
         }
 
-        public GameState UpdateChipsPool(GameState gameState, int updateValue)
+        public async Task<PokerTable> UpdateChipsPool(PokerTable pokerTable, int updateValue)
         {
-            gameState.PokerTable.ChipsValue += updateValue;
-            UpdateGameState(gameState);
+            pokerTable.ChipsValue += updateValue;
+            await UpdateGameState(pokerTable);
             
-            return gameState;
+            return pokerTable;
         }
 
-        public GameState RemovePlayerCards(GameState gameState)
+        public async Task<PokerTable> RemovePlayerCards(PokerTable pokerTable)
         {
-            foreach (var player in gameState.PokerTable.Players)
+            foreach (var player in pokerTable.Players)
             {
                 player.Cards.Clear();
             }
 
-            UpdateGameState(gameState);
+            await UpdateGameState(pokerTable);
 
-            return gameState;
+            return pokerTable;
         }
-        public GameState ResetPlayerBets(GameState gameState)
+        public async Task<PokerTable> ResetPlayerBets(PokerTable pokerTable)
         {
-            foreach (var player in gameState.PokerTable.Players)
+            foreach (var player in pokerTable.Players)
             {
                 player.CurrentBet = 0;
             }
 
-            UpdateGameState(gameState);
+            await UpdateGameState(pokerTable);
 
-            return gameState;
+            return pokerTable;
         }
 
-        public GameState GiveCardsToTable(int amountOfCards, GameState gameState) 
+        public async Task<PokerTable> GiveCardsToTable(int amountOfCards, PokerTable pokerTable) 
         {
-            return new GameState();
-        }
-
-        public GameState GiveCardsToPlayers(GameState gameState)
-        {
-            if (gameState.PokerTable != null)
+            if (pokerTable.CardDeck != null && pokerTable.CardDeck.Count > 0)
             {
-                Stack<Card> cards;
-
-                if (gameState.PokerTable.CardDeck.Count > 0)
-                    cards = new Stack<Card>();
-                for (int i = 0; i < 2; i++)
+                Stack<Card> cards = new Stack<Card>(DataManager.GetCardsFromDeck(pokerTable.CardDeck));
+                
+                for (int i = 0; i < amountOfCards; i++)
                 {
-                    foreach (var player in gameState.PokerTable.Players)
-                    {
-                        player.Cards.Add();
-                    }
+                    pokerTable.Cards.Add(new TableCard() { TableId = pokerTable.Id, Card = cards.Pop() });
                 }
 
-                UpdateGameState(gameState);
+                pokerTable.CardDeck = DataManager.GetDeckCards(cards.ToList(), pokerTable);
+
+                await UpdateGameState(pokerTable);
             }
 
-            return gameState;
+            return pokerTable;
         }
 
-        public GameState ClearTable(GameState gameState)
+        public async Task<PokerTable> GiveCardsToPlayers(PokerTable pokerTable)
         {
-            gameState.PokerTable.Cards.Clear();
-            gameState.PokerTable.CardDeck.Clear();
-            gameState.PokerTable.ChipsValue = 0;
+            if (pokerTable.CardDeck != null && pokerTable.CardDeck.Count > 0)
+            {
+                Stack<Card> cards = new Stack<Card>(DataManager.GetCardsFromDeck(pokerTable.CardDeck));
 
-            RemovePlayerCards(gameState);
-            ResetPlayerBets(gameState);
+                for (int i = 0; i < 2; i++)
+                {
+                    foreach (var player in pokerTable.Players)
+                    {
+                        int cardId = cards.Peek().Id;   
+                        player.Cards.Add(new PlayerCard() { PlayerId = player.Id, Card = cards.Pop(), CardId = cardId });
+                    }
+                }
+                pokerTable.CardDeck = DataManager.GetDeckCards(cards.ToList(), pokerTable);
 
-            UpdateGameState(gameState);
+                await UpdateGameState(pokerTable);
+            }
 
-            return gameState;
+            return pokerTable;
+        }
+
+        public async Task<PokerTable> ClearTable(PokerTable pokerTable)
+        {
+            pokerTable.Cards?.Clear();
+            pokerTable.CardDeck?.Clear();
+            pokerTable.ChipsValue = 0;
+
+            await RemovePlayerCards(pokerTable);
+            await ResetPlayerBets(pokerTable);
+            await UpdateGameState(pokerTable);
+
+            return pokerTable;
         }
         
-        public GameState GetNewCardDeck(GameState gameState)
+        public PokerTable GetNewCardDeck(PokerTable pokerTable)
         {
-            List<Card> cards = new List<Card>();
-            _cards = new Stack<Card>(cards);
-            gameState.PokerTable.Cards = _cards;
 
-            return new GameState();
+            return pokerTable;
         }
 
-        public void EndGame(GameState gameState)
+        public void EndGame(PokerTable pokerTable)
         {
-            GivePlayerStats(new Player());
+            GivePlayerStats(new User());
         }
 
         private void GivePlayerStats(User user)
         {
             user.Wins++;
-            user.ChipsAquired += player.ChipValue;
+            user.ChipsAquired += user.Player.ChipsValue;
 
             // save player(User)
-        }
-
-        public void SetPlayerTurn(GameState gameState)
-        {
-            Player? nextPlayer = FindNextPlayer(gameState);
-            
-            if (nextPlayer == null)
-                return;
-
-            gameState.CurrentPlayerId = nextPlayer.Id;
-            gameState.PlayerIdentifier = nextPlayer.UserIdentifier;
         }
 
         /// <summary>
@@ -222,12 +211,10 @@ namespace GameEngine.Core.Managers
                     return false;
 
                 player.CurrentBet = betEvent.BetAmount;
-                player.ChipValue -= betEvent.BetAmount;
+                player.ChipsValue -= betEvent.BetAmount;
 
                 gameState.PokerTable.ChipsValue += betEvent.BetAmount;
-
-                SetPlayerTurn(gameState);
-
+                
                 return true;
             }
 

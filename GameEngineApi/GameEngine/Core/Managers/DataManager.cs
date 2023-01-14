@@ -4,9 +4,9 @@ namespace GameEngine.Core.Managers
 {
     public class DataManager
     {
-        public static List<DeckCard> GetDeckCards(List<Card> cards, GameState gameState)
+        public static IList<DeckCard> GetDeckCards(IList<Card> cards, PokerTable pokerTable)
         {
-            List<DeckCard> deckCards = new List<DeckCard>();
+            IList<DeckCard> deckCards = new List<DeckCard>();
 
             foreach (var card in cards)
             {
@@ -14,8 +14,8 @@ namespace GameEngine.Core.Managers
                 { 
                     Card = card,
                     CardId = card.Id,
-                    PokerTable = gameState.PokerTable,
-                    TableId = gameState.PokerTable.Id
+                    PokerTable = pokerTable,
+                    TableId = pokerTable.Id
                 };
                 
                 deckCards.Add(deckCard);
@@ -24,9 +24,9 @@ namespace GameEngine.Core.Managers
             return deckCards;
         }
 
-        public static List<Card> GetCardsFromDeck(List<DeckCard> deckCards) 
+        public static IList<Card> GetCardsFromDeck(IList<DeckCard> deckCards) 
         {
-            List<Card> cards = new List<Card>();  
+            IList<Card> cards = new List<Card>();  
 
             foreach (var deckCard in deckCards)
             {

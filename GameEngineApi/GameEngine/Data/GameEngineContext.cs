@@ -16,7 +16,6 @@ namespace GameEngine.Data
         }
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.Entity<PlayerCard>().HasKey(pc => new { pc.CardId, pc.PlayerId });
 			modelBuilder.Entity<TableCard>().HasKey(tc => new { tc.CardId, tc.TableId });
@@ -58,6 +57,7 @@ namespace GameEngine.Data
 				.HasForeignKey(pc => pc.CardId)
 				.OnDelete(DeleteBehavior.NoAction);
 
+			base.OnModelCreating(modelBuilder);
 		}
 
 		public DbSet<GameEngine.Models.Game.User> User { get; set; } = default!;

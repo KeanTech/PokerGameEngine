@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using GameEngine.Data;
 using GameEngine.Core.Managers;
+using GameEngine.Models.Game;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<GameEngineContext>(options =>
@@ -11,6 +12,7 @@ builder.Services.AddDbContext<WebhookContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("WebHookContext") ??
 	                     throw new InvalidOperationException("Connection string 'GameEngineContext' not found.")));
 builder.Services.AddScoped<IWebhookService, WebhookService>();
+
 
 // Add services to the container.
 
@@ -30,6 +32,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseHttpsRedirection();
 

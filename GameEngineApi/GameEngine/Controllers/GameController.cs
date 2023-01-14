@@ -1,6 +1,7 @@
 ﻿using GameEngine.Core.Managers;
 using GameEngine.Core.Services.Webhook;
 using GameEngine.Core.Services.Webhook.Models.Events;
+using GameEngine.Data;
 using GameEngine.Models.Events;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +13,12 @@ namespace GameEngine.Controllers
     {
         private readonly GameManager _gameManager;
         private readonly IWebhookService _service;
+        private readonly GameEngineContext _context;
 
-        public GameController(IWebhookService service) 
+        public GameController(IWebhookService service, GameEngineContext context) 
         {
             _service = service;
+            _context = context;
         }
 
         [HttpPost]

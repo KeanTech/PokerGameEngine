@@ -1,5 +1,6 @@
 ﻿using GameEngine.Core.Enums;
 using GameEngine.Core.Managers;
+using GameEngine.Data;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace GameEngine.Controllers
     public class DummyController : Controller
     {
         private readonly IGameManager _gameManager;
-        private static GameState? _gameState;
-        public DummyController(IGameManager gameManager) 
+        private readonly GameEngineContext _context;
+        private static PokerTable? _gameState;
+        public DummyController(IGameManager gameManager, GameEngineContext context) 
         {
             _gameManager = gameManager;
+            _context = context;
         }
 
         private bool DoesPlayerExistOnTable(GameState gameState, int playerId) 
@@ -51,8 +54,24 @@ namespace GameEngine.Controllers
         [Route("CreateNewGame")]
         public IActionResult Index()
         {
-            if(_gameState == null)
-                _gameState = _gameManager.StartNewGame(1);
+            PokerTable pokerTable = new PokerTable()
+            {
+                Players = new List<Player>()
+                {
+                    new Player() { Name = "Player1", ChipsValue = 500 },
+                    new Player() { Name = "Player2", ChipsValue = 500 }
+                },
+                CardDeck = new List<DeckCard>() 
+                {
+                    new DeckCard() {  }
+                }
+            };
+
+            if (_gameState == null)
+                _gameState = _gameManager.StartNewGame(pokerTable).Result;
+
+            _gameManager.GiveCardsToPlayers(pokerTable);
+            _gameManager.GiveCardsToTable(3, pokerTable);
 
             return Ok(_gameState);
         }
@@ -61,8 +80,8 @@ namespace GameEngine.Controllers
         [Route("GiveCards")]
         public IActionResult GiveCards(GameState gameState) 
         {
-           GameState newGameState = _gameManager.GiveCards(1, gameState);
-           return Ok(newGameState);
+           //GameState newGameState = _gameManager.GiveCards(1, gameState);
+           return Ok();
         }
 
         [HttpPut]

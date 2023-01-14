@@ -13,20 +13,20 @@ namespace GameEngine.Core.Managers
         /// </summary>
         /// <param name="tabelId"></param>
         /// <returns></returns>
-        GameState StartNewGame(int tabelId);
+        Task<PokerTable> StartNewGame(PokerTable pokerTable);
 
         /// <summary>
         /// This method clears the Table pool, playercards, playerBets, and tableCards
         /// </summary>
         /// <returns></returns>
-        GameState ClearTable(GameState gameState);
+        Task<PokerTable> ClearTable(PokerTable pokerTable);
 
         /// <summary>
         /// Needs a valid GameState to use this method
         /// <para>When this method is finished the GameState will be deleted from the database and the winning player gets stats</para>
         /// </summary>
         /// <param name="gameState"></param>
-        void EndGame(GameState gameState);
+        void EndGame(PokerTable pokerTable);
 
         /// <summary>
         /// This method need a valid tableId
@@ -34,14 +34,14 @@ namespace GameEngine.Core.Managers
         /// <param name="tableId"></param>
         /// <returns>A new GameState if theres is no GameState with that tableId
         /// <para>Else it returns the GameState from the database</para></returns>
-        GameState GetCurrentGame(int tableId);
+        PokerTable GetCurrentGame(int tableId);
         
         /// <summary>
         /// This method will generate a new deck for the table
         /// </summary>
         /// <param name="gameState"></param>
         /// <returns></returns>
-        GameState GetNewCardDeck(GameState gameState);
+        PokerTable GetNewCardDeck(PokerTable pokerTable);
 
         /// <summary>
         /// This method will update the gameState so that players have cards in their card List 
@@ -49,7 +49,7 @@ namespace GameEngine.Core.Managers
         /// <param name="amountOfCards"></param>
         /// <param name="gameState"></param>
         /// <returns></returns>
-        GameState GiveCardsToPlayers(GameState gameState);
+        Task<PokerTable> GiveCardsToPlayers(PokerTable pokerTable);
 
         /// <summary>
         /// This method will update the gameState so that players have cards in their card List 
@@ -57,17 +57,15 @@ namespace GameEngine.Core.Managers
         /// <param name="amountOfCards"></param>
         /// <param name="gameState"></param>
         /// <returns></returns>
-        GameState GiveCardsToTable(int amountOfCards, GameState gameState);
-
+        Task<PokerTable> GiveCardsToTable(int amountOfCards, PokerTable pokerTable);
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        GameState ResetPlayerBets(GameState gameState);
-        void SetPlayerTurn(GameState gameState);
-        GameState UpdateChipsPool(GameState gameState, int updateValue);
-        GameState UpdateGameState(GameState gameState);
+        Task<PokerTable> ResetPlayerBets(PokerTable pokerTable);
+        Task<PokerTable> UpdateChipsPool(PokerTable pokerTable, int updateValue);
+        Task<PokerTable> UpdateGameState(PokerTable pokerTable);
         bool PlayerCall(BetEvent betEvent);
         bool PlayerRaise(BetEvent betEvent);
         bool PlayerAllIn(BetEvent betEvent);

@@ -49,8 +49,17 @@ namespace GameEngine.Core.Managers
         /// <param name="amountOfCards"></param>
         /// <param name="gameState"></param>
         /// <returns></returns>
-        GameState GiveCards(int amountOfCards, GameState gameState);
-        
+        GameState GiveCardsToPlayers(GameState gameState);
+
+        /// <summary>
+        /// This method will update the gameState so that players have cards in their card List 
+        /// </summary>
+        /// <param name="amountOfCards"></param>
+        /// <param name="gameState"></param>
+        /// <returns></returns>
+        GameState GiveCardsToTable(int amountOfCards, GameState gameState);
+
+
         /// <summary>
         /// 
         /// </summary>

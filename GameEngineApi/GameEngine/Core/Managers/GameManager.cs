@@ -131,13 +131,21 @@ namespace GameEngine.Core.Managers
             return gameState;
         }
 
-        public GameState GiveCards(int amountOfCards, GameState gameState)
+        public GameState GiveCardsToTable(int amountOfCards, GameState gameState) 
         {
+            
+        }
+
+        public GameState GiveCardsToPlayers(GameState gameState)
+        {
+
+            Stack<Card> cards = new Stack<Card>();
+
             for (int i = 0; i < 2; i++)
             {
                 foreach (var player in gameState.PokerTable.Players)
                 {
-                    player.Cards.Add(gameState.PokerTable.CardDeck.Pop());
+                    player.Cards.Add(gameState.PokerTable.CardDeck);
                 }
             }
 

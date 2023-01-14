@@ -138,18 +138,22 @@ namespace GameEngine.Core.Managers
 
         public GameState GiveCardsToPlayers(GameState gameState)
         {
-
-            Stack<Card> cards = new Stack<Card>();
-
-            for (int i = 0; i < 2; i++)
+            if (gameState.PokerTable != null)
             {
-                foreach (var player in gameState.PokerTable.Players)
-                {
-                    player.Cards.Add(gameState.PokerTable.CardDeck);
-                }
-            }
+                Stack<Card> cards;
 
-            UpdateGameState(gameState); 
+                if (gameState.PokerTable.CardDeck.Count > 0)
+                    cards = new Stack<Card>();
+                for (int i = 0; i < 2; i++)
+                {
+                    foreach (var player in gameState.PokerTable.Players)
+                    {
+                        player.Cards.Add();
+                    }
+                }
+
+                UpdateGameState(gameState);
+            }
 
             return gameState;
         }

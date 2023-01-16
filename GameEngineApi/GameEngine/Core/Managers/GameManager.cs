@@ -6,7 +6,7 @@ using GameEngine.Models.Game;
 
 namespace GameEngine.Core.Managers
 {
-    public class GameManager : IGameManager
+    public class GameManager
     {
         private static List<Card> defaultCardDeck = new List<Card> 
         {

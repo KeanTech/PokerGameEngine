@@ -1,4 +1,5 @@
-﻿using GameEngine.Core.Managers;
+﻿using GameEngine.Core.Enums;
+using GameEngine.Core.Managers;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,15 @@ namespace GameEngine.Controllers
         [HttpGet("CheckHand")]
         public void CheckHand()
         {
+            var showCase = new List<Card>();
+            foreach (Symbols symbol in Enum.GetValues(typeof(Symbols)))
+            {
+                foreach (CardTypes ct in Enum.GetValues(typeof(CardTypes)))
+                {
+                    showCase.Add(new Card() { Symbol = symbol, Type = ct });
+                }
+            }
+
             List<Card> playerCards = new List<Card>()
             {
                 new Card()

@@ -1,15 +1,15 @@
 ﻿using GameEngine.Core.Enums;
 using GameEngine.Models.Game;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace GameEngine.Core.Managers
 {
     public class CardManager : ICardManager
     {
-        private WebHook WebHook;
-        private GameManager GameManager;
-        public List<Player> GameWinner { get; set; }
-        public List<Card> Cards { get; set; }
-        public PokerHand HandValue { get; set; }
+        public List<Player> Players { get; set; }
+        public List<Player> GameWinners { get; set; }
+        public Table Table { get; set; }
+        public PokerHand? HandValue { get; set; }
         public List<Card> PlayerHand { get; set; }
         public Card HighestCard { get; set; }
 
@@ -26,35 +26,48 @@ namespace GameEngine.Core.Managers
         {
 
         }
-        public CardManager(List<Card> cards)
+        public CardManager(List<Player> players, Table table)
         {
-            Cards = cards;
+            Players = players;
+            Table = table;
         }
 
         public void GetPlayerHandValue(List<Card> playerCards, List<Card> boardCards)
         {
-            List<Card> cards = new List<Card>();
-            cards.AddRange(playerCards);
-            cards.AddRange(boardCards);
 
-            IsRoyalFlush(cards);
-            //IsStraightFlush(cards);
-            //IsFlush(cards);
-            //IsStraight(cards);
-            //CheckForFullHouse(cards);
-            //CheckForThreeOfAKind(cards);
-            //CheckForTwoPairs(cards);
-            //CheckForOnePair(cards);
-            //CheckForHighestCard(cards);
-            //CheckForDuplicates(cards);
-            //CheckForSequences(cards);
+
+            for (int i = 0; i < Players.Count; i++)
+            {
+                List<Card> cards = new List<Card>();
+                cards.AddRange(playerCards);
+                //cards.AddRange(Table.Cards);
+                cards.AddRange(boardCards);
+                CheckForRoyalFlush(new List<Card>());
+            CheckForStraightFlush(cards);
+            CheckForFourOfAKind(cards);
+            CheckForFullHouse(cards);
+            CheckForFlush(cards);
+            CheckForStraight(cards);
+            CheckForThreeOfAKind(cards);
+            CheckForTwoPairs(cards);
+            CheckForOnePair(cards);
+            CheckForHighestCard(cards);
+            }
+
+
             //Looks at current card, next card, and looks for duplicate cards or sequences of cards
-            //IsRoyalFlush(cards);
-            //IsStraightFlush(sequences);
+
 
         }
 
-        private bool IsRoyalFlush(List<Card> cardsToCheck)
+        //private async PokerHand GetHandValue(List<Card> cards)
+        //{
+        //    var tasks = new List<Task<bool>>();
+        //    tasks.Add(CheckForFlush(cards));
+        //    await Task.WhenAny(tasks);
+        //}
+
+        private bool CheckForRoyalFlush(List<Card> cardsToCheck)
         {
             List<Card> sequencedCards = CheckForSequences(cardsToCheck);
             IEnumerable<Card> isFlush = sequencedCards.GroupBy(x => x.Symbol).Where(x => x.Count() >= 5).FirstOrDefault();
@@ -63,14 +76,10 @@ namespace GameEngine.Core.Managers
                 HandValue = PokerHand.RoyalFlush;
                 return true;
             }
-            else
-            {
-                return false;
-            }
-
+            return false;
         }
 
-        public bool IsStraightFlush(List<Card> cards)
+        private bool CheckForStraightFlush(List<Card> cards)
         {
             List<Card> sequencedCards = CheckForSequences(cards);
             IEnumerable<Card> straightFlush = sequencedCards.GroupBy(x => x.Symbol).Where(y => y.Count() >= 5).FirstOrDefault();
@@ -79,13 +88,10 @@ namespace GameEngine.Core.Managers
                 HandValue = PokerHand.StraightFlush;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
-        private bool IsFlush(List<Card> cardsToCheck)
+        private async Task<bool> CheckForFlush(List<Card> cardsToCheck)
         {
             List<Card> sequencedCards = CheckForSequences(cardsToCheck);
             IEnumerable<Card> flush = sequencedCards.GroupBy(x => x.Symbol).Where(x => x.Count() == 5).SelectMany(x => x.OrderBy(x => x.Symbol)).Take(5);
@@ -94,10 +100,7 @@ namespace GameEngine.Core.Managers
                 HandValue = PokerHand.Flush;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
 
@@ -106,7 +109,7 @@ namespace GameEngine.Core.Managers
             HighestCard = cards.OrderBy(x => x.Type).ElementAt(cards.Count - 1);
         }
 
-        private bool IsStraight(List<Card> cards)
+        private bool CheckForStraight(List<Card> cards)
         {
             List<Card> sequencesCards = CheckForSequences(cards);
             IEnumerable<Card> noDuplicates = sequencesCards.Distinct().ToList();
@@ -116,10 +119,7 @@ namespace GameEngine.Core.Managers
                 HandValue = PokerHand.Straight;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private List<Card> CheckForSequences(List<Card> cards)
@@ -147,7 +147,7 @@ namespace GameEngine.Core.Managers
                     //If the sequence ends on the last cards in the list
                     if (i == cards.Count - 1)
                     {
-                            sequences.Add(new Card(NextCardValue, NextCardSymbol));
+                        sequences.Add(new Card(NextCardValue, NextCardSymbol));
                     }
 
                     else
@@ -176,10 +176,7 @@ namespace GameEngine.Core.Managers
                     return false;
                 }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private bool CheckForFourOfAKind(List<Card> cards)
@@ -190,10 +187,7 @@ namespace GameEngine.Core.Managers
                 HandValue = PokerHand.FourOfAKind;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private bool CheckForThreeOfAKind(List<Card> cardsToCheck)
@@ -204,10 +198,7 @@ namespace GameEngine.Core.Managers
                 HandValue = PokerHand.ThreeOfAKind;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private bool CheckForTwoPairs(List<Card> cardsToCheck)
@@ -218,10 +209,7 @@ namespace GameEngine.Core.Managers
                 HandValue = PokerHand.TwoPair;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private bool CheckForOnePair(List<Card> cardsToCheck)
@@ -232,10 +220,7 @@ namespace GameEngine.Core.Managers
                 HandValue = PokerHand.OnePair;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         //private List<Card> CheckForSequences(List<Card> cards)

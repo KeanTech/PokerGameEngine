@@ -11,8 +11,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameEngine.Migrations
 {
     [DbContext(typeof(GameEngineContext))]
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
     [Migration("20230116111532_new-models-11")]
     partial class newmodels11
+========
+    [Migration("20230114143104_startup")]
+    partial class startup
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +28,7 @@ namespace GameEngine.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
 
             modelBuilder.Entity("CardDeck", b =>
                 {
@@ -77,6 +83,8 @@ namespace GameEngine.Migrations
 
                     b.ToTable("CardPokerTable");
                 });
+========
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
 
             modelBuilder.Entity("GameEngine.Models.Game.Accessory", b =>
                 {
@@ -102,6 +110,15 @@ namespace GameEngine.Migrations
 
             modelBuilder.Entity("GameEngine.Models.Game.Card", b =>
                 {
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
+========
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
                     b.Property<int>("Symbol")
                         .HasColumnType("int");
 
@@ -113,6 +130,7 @@ namespace GameEngine.Migrations
                     b.ToTable("Card");
                 });
 
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
             modelBuilder.Entity("GameEngine.Models.Game.Deck", b =>
                 {
                     b.Property<int>("Id")
@@ -124,6 +142,21 @@ namespace GameEngine.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Deck");
+========
+            modelBuilder.Entity("GameEngine.Models.Game.DeckCard", b =>
+                {
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CardId", "TableId");
+
+                    b.HasIndex("TableId");
+
+                    b.ToTable("DeckCards");
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
@@ -134,7 +167,7 @@ namespace GameEngine.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Chips")
+                    b.Property<int>("ChipsValue")
                         .HasColumnType("int");
 
                     b.Property<int>("CurrentBet")
@@ -146,6 +179,55 @@ namespace GameEngine.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
+========
+
+                    b.Property<int?>("PokerTableId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PokerTableId");
+
+                    b.ToTable("Player");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.PlayerCard", b =>
+                {
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CardId", "PlayerId");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("PlayerCards");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.PokerTable", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChipsValue")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Table");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.TableCard", b =>
+                {
+                    b.Property<int>("CardId")
+                        .HasColumnType("int");
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
 
                     b.Property<int>("TableId")
                         .HasColumnType("int");
@@ -196,6 +278,16 @@ namespace GameEngine.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
+========
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserIdentifier")
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -207,6 +299,7 @@ namespace GameEngine.Migrations
                     b.ToTable("User");
                 });
 
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
             modelBuilder.Entity("CardDeck", b =>
                 {
                     b.HasOne("GameEngine.Models.Game.Deck", null)
@@ -252,6 +345,8 @@ namespace GameEngine.Migrations
                         .IsRequired();
                 });
 
+========
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
             modelBuilder.Entity("GameEngine.Models.Game.Accessory", b =>
                 {
                     b.HasOne("GameEngine.Models.Game.User", null)
@@ -263,18 +358,84 @@ namespace GameEngine.Migrations
 
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
                     b.HasOne("GameEngine.Models.Game.PokerTable", "Table")
                         .WithMany("Players")
+========
+                    b.HasOne("GameEngine.Models.Game.Card", "Card")
+                        .WithMany("Decks")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameEngine.Models.Game.PokerTable", "PokerTable")
+                        .WithMany("CardDeck")
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
                         .HasForeignKey("TableId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
                     b.Navigation("Table");
+========
+                    b.Navigation("Card");
+
+                    b.Navigation("PokerTable");
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.PokerTable", b =>
                 {
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
                     b.HasOne("GameEngine.Models.Game.Deck", "Deck")
+========
+                    b.HasOne("GameEngine.Models.Game.PokerTable", null)
+                        .WithMany("Players")
+                        .HasForeignKey("PokerTableId");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.PlayerCard", b =>
+                {
+                    b.HasOne("GameEngine.Models.Game.Card", "Card")
+                        .WithMany("Players")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("GameEngine.Models.Game.Player", "Player")
+                        .WithMany("Cards")
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.TableCard", b =>
+                {
+                    b.HasOne("GameEngine.Models.Game.Card", "Card")
+                        .WithMany("Tables")
+                        .HasForeignKey("CardId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GameEngine.Models.Game.PokerTable", "PokerTable")
+                        .WithMany("Cards")
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Card");
+
+                    b.Navigation("PokerTable");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.User", b =>
+                {
+                    b.HasOne("GameEngine.Models.Game.Player", "Player")
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
                         .WithMany()
                         .HasForeignKey("DeckId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -286,6 +447,25 @@ namespace GameEngine.Migrations
             modelBuilder.Entity("GameEngine.Models.Game.PokerTable", b =>
                 {
                     b.Navigation("Players");
+<<<<<<<< HEAD:GameEngineApi/GameEngine/Migrations/20230116111532_new-models-11.Designer.cs
+========
+
+                    b.Navigation("Tables");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
+                {
+                    b.Navigation("Cards");
+                });
+
+            modelBuilder.Entity("GameEngine.Models.Game.PokerTable", b =>
+                {
+                    b.Navigation("CardDeck");
+
+                    b.Navigation("Cards");
+
+                    b.Navigation("Players");
+>>>>>>>> gameManagerFlow:GameEngineApi/GameEngine/Migrations/20230114143104_startup.Designer.cs
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.User", b =>

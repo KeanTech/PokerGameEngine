@@ -4,22 +4,22 @@
 
 namespace GameEngine.Migrations
 {
-    public partial class mdsalkdmksladsddwqq222 : Migration
+    /// <inheritdoc />
+    public partial class newmodels5 : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
                 name: "Card",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     Symbol = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Card", x => x.Id);
+                    table.PrimaryKey("PK_Card", x => new { x.Symbol, x.Type });
                 });
 
             migrationBuilder.CreateTable(
@@ -28,7 +28,7 @@ namespace GameEngine.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CurrentBet = table.Column<int>(type: "int", nullable: false),
                     Chips = table.Column<int>(type: "int", nullable: false),
                     IsFolded = table.Column<bool>(type: "bit", nullable: false)
@@ -39,37 +39,41 @@ namespace GameEngine.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PlayerCards",
+                name: "CardPlayer",
                 columns: table => new
                 {
-                    PlayerId = table.Column<int>(type: "int", nullable: false),
-                    CardId = table.Column<int>(type: "int", nullable: false)
+                    PlayersId = table.Column<int>(type: "int", nullable: false),
+                    CardsSymbol = table.Column<int>(type: "int", nullable: false),
+                    CardsType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PlayerCards", x => new { x.CardId, x.PlayerId });
+                    table.PrimaryKey("PK_CardPlayer", x => new { x.PlayersId, x.CardsSymbol, x.CardsType });
                     table.ForeignKey(
-                        name: "FK_PlayerCards_Card_CardId",
-                        column: x => x.CardId,
+                        name: "FK_CardPlayer_Card_CardsSymbol_CardsType",
+                        columns: x => new { x.CardsSymbol, x.CardsType },
                         principalTable: "Card",
-                        principalColumn: "Id");
+                        principalColumns: new[] { "Symbol", "Type" },
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PlayerCards_Player_PlayerId",
-                        column: x => x.PlayerId,
+                        name: "FK_CardPlayer_Player_PlayersId",
+                        column: x => x.PlayersId,
                         principalTable: "Player",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PlayerCards_PlayerId",
-                table: "PlayerCards",
-                column: "PlayerId");
+                name: "IX_CardPlayer_CardsSymbol_CardsType",
+                table: "CardPlayer",
+                columns: new[] { "CardsSymbol", "CardsType" });
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "PlayerCards");
+                name: "CardPlayer");
 
             migrationBuilder.DropTable(
                 name: "Card");

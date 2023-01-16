@@ -422,6 +422,10 @@ namespace GameEngine.Core.Managers
         
         public PokerTable GetNewCardDeck(PokerTable pokerTable)
         {
+            if (_context.Card.ToList().Count == 0)
+                _context.Card.AddRange(GetNewCardDeck());
+
+
 
             return pokerTable;
         }

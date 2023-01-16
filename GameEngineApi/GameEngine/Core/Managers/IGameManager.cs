@@ -13,7 +13,7 @@ namespace GameEngine.Core.Managers
         /// </summary>
         /// <param name="tabelId"></param>
         /// <returns></returns>
-        Task<PokerTable> StartNewGame(IList<Player> players);
+        Task<PokerTable> StartNewGame(IList<Player> players, PokerTable pokerTable);
 
         /// <summary>
         /// This method clears the Table pool, playercards, playerBets, and tableCards

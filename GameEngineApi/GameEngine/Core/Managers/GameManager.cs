@@ -340,7 +340,7 @@ namespace GameEngine.Core.Managers
 
         public async Task<PokerTable> UpdateChipsPool(PokerTable pokerTable, int updateValue)
         {
-            pokerTable.ChipsValue += updateValue;
+            pokerTable.Chips += updateValue;
             await UpdateGameState(pokerTable);
             
             return pokerTable;
@@ -374,19 +374,19 @@ namespace GameEngine.Core.Managers
         #region Give Cards methods
         public async Task<PokerTable> GiveCardsToTable(int amountOfCards, PokerTable pokerTable)
         {
-            if (pokerTable.CardDeck != null && pokerTable.CardDeck.Count > 0)
+            if (pokerTable.Deck != null && pokerTable.Deck.Cards.Count > 0)
             {
-                Stack<Card> cards = new Stack<Card>(DataManager.GetCardsFromDeck(pokerTable.CardDeck));
+                Stack<Card> cards = new Stack<Card>(pokerTable.Deck.Cards);
 
                 for (int i = 0; i < amountOfCards; i++)
                 {
                     if (pokerTable.Cards == null)
-                        pokerTable.Cards = new List<TableCard>();
+                        pokerTable.Cards = new List<Card>();
 
-                    pokerTable.Cards.Add(new TableCard() { TableId = pokerTable.Id, Card = cards.Pop() });
+                    pokerTable.Cards.Add(cards.Pop());
                 }
 
-                pokerTable.CardDeck = DataManager.GetDeckCards(cards.ToList(), pokerTable);
+                pokerTable.Cards = cards.ToList();
 
                 await UpdateGameState(pokerTable);
             }
@@ -396,22 +396,21 @@ namespace GameEngine.Core.Managers
 
         public async Task<PokerTable> GiveCardsToPlayers(PokerTable pokerTable)
         {
-            if (pokerTable.CardDeck != null && pokerTable.CardDeck.Count > 0)
+            if (pokerTable.Deck.Cards != null && pokerTable.Deck.Cards.Count > 0)
             {
-                Stack<Card> cards = new Stack<Card>(DataManager.GetCardsFromDeck(pokerTable.CardDeck));
+                Stack<Card> cards = new Stack<Card>(pokerTable.Deck.Cards);
 
                 for (int i = 0; i < 2; i++)
                 {
                     foreach (var player in pokerTable.Players)
                     {
-                        int cardId = cards.Peek().Id;
                         if (player.Cards == null)
-                            player.Cards = new List<PlayerCard>();
+                            player.Cards = new List<Card>();
 
-                        player.Cards.Add(new PlayerCard() { PlayerId = player.Id, Card = cards.Pop(), CardId = cardId });
+                        player.Cards.Add(cards.Pop());
                     }
                 }
-                pokerTable.CardDeck = DataManager.GetDeckCards(cards.ToList(), pokerTable);
+                pokerTable.Deck.Cards = cards.ToList();
 
                 await UpdateGameState(pokerTable);
             }
@@ -424,8 +423,8 @@ namespace GameEngine.Core.Managers
         public async Task<PokerTable> ClearTable(PokerTable pokerTable)
         {
             pokerTable.Cards?.Clear();
-            pokerTable.CardDeck?.Clear();
-            pokerTable.ChipsValue = 0;
+            pokerTable.Deck.Cards?.Clear();
+            pokerTable.Chips = 0;
 
             await RemovePlayerCards(pokerTable);
             await ResetPlayerBets(pokerTable);
@@ -457,15 +456,18 @@ namespace GameEngine.Core.Managers
 
         public void EndGame(PokerTable pokerTable)
         {
-            GivePlayerStats(new User());
+            GivePlayerStats(pokerTable.Players.FirstOrDefault(x => x.Chips > 0));
+
+
+            // Delete data from db
         }
 
-        private void GivePlayerStats(User user)
+        private void GivePlayerStats(Player player)
         {
-            user.Wins++;
-            user.ChipsAquired += user.Player.ChipsValue;
+            player.User.Wins++;
+            player.User.ChipsAquired += player.Chips;
 
-            // save player(User)
+            _context.Player.Update(player);
         }
 
         /// <summary>
@@ -484,14 +486,14 @@ namespace GameEngine.Core.Managers
             Player? player = pokerTable.Players.FirstOrDefault(x => x.Id == betEvent.PlayerId);
             if (player != null)
             {
-                if (player.ChipsValue < betEvent.BetAmount)
+                if (player.Chips < betEvent.BetAmount)
                     return false;
 
                 switch (betType)
                 {
                     case "Call":
                         int highestBet = GetHighestBet(pokerTable.Players);
-                        player.ChipsValue -= (highestBet - player.CurrentBet);
+                        player.Chips -= (highestBet - player.CurrentBet);
                         player.CurrentBet = highestBet;
                         return true;
 
@@ -500,9 +502,9 @@ namespace GameEngine.Core.Managers
                 }
 
                 player.CurrentBet += betEvent.BetAmount;
-                player.ChipsValue -= betEvent.BetAmount;
+                player.Chips -= betEvent.BetAmount;
 
-                pokerTable.ChipsValue += betEvent.BetAmount;
+                pokerTable.Chips += betEvent.BetAmount;
                 
                 return true;
             }

@@ -3,8 +3,6 @@ using GameEngine.Core.Services.Webhook;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using GameEngine.Data;
-using GameEngine.Models.BusinessModels;
-using GameEngine.Models.Game;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<GameEngineContext>(options =>

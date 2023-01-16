@@ -10,7 +10,7 @@ namespace GameEngine.Models.Game
         public int OwnerId { get; set; }
         public Player Owner { get; set; }
         public IList<Card> Cards { get; set; }
-        public List<Player> Players { get; set; }
+        public IList<Player> Players { get; set; }
         public Deck Deck { get; set; }
 		public int Chips { get; set; }
     }

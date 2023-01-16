@@ -3,7 +3,6 @@ using GameEngine.Core.Managers;
 using GameEngine.Core.Services.Webhook;
 using GameEngine.Core.Services.Webhook.Models.Events;
 using GameEngine.Data;
-using GameEngine.Models.BusinessModels;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

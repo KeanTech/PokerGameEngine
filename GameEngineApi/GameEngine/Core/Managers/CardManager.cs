@@ -37,17 +37,10 @@ namespace GameEngine.Core.Managers
             cards.AddRange(playerCards);
             cards.AddRange(boardCards);
 
-            //Sorts the incoming cards in card values for checking
-
-            //Dictionary that holds duplicate cards
-            //IDictionary<CardTypes, int> duplicates = new Dictionary<CardTypes, int>();
-
-            //List of sequences
-
-            //Checks for the highest card
-            HighestCard = cards.ElementAt(cards.Count - 1);
-
-            IsStraight(cards);
+            IsRoyalFlush(cards);
+            //IsStraightFlush(cards);
+            //IsFlush(cards);
+            //IsStraight(cards);
             //CheckForFullHouse(cards);
             //CheckForThreeOfAKind(cards);
             //CheckForTwoPairs(cards);
@@ -61,17 +54,50 @@ namespace GameEngine.Core.Managers
 
         }
 
-        private void IsRoyalFlush(List<Card> cardsToCheck)
+        private bool IsRoyalFlush(List<Card> cardsToCheck)
         {
-            IEnumerable<Card> isFlush = cardsToCheck.GroupBy(x => x.Symbol).Where(x => x.Count() == 5).FirstOrDefault();
-
-            //IEnumerable<Card> royalFlush = isFlush.Where()
+            List<Card> sequencedCards = CheckForSequences(cardsToCheck);
+            IEnumerable<Card> isFlush = sequencedCards.GroupBy(x => x.Symbol).Where(x => x.Count() >= 5).FirstOrDefault();
+            if (isFlush.Any(x => x.Type == CardTypes.Ace))
+            {
+                HandValue = PokerHand.RoyalFlush;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
         }
 
-        private void IsFlush(List<Card> cardsToCheck)
+        public bool IsStraightFlush(List<Card> cards)
         {
-            IEnumerable<Card> flush = cardsToCheck.GroupBy(x => x.Symbol).Where(x => x.Count() == 5).First();
+            List<Card> sequencedCards = CheckForSequences(cards);
+            IEnumerable<Card> straightFlush = sequencedCards.GroupBy(x => x.Symbol).Where(y => y.Count() >= 5).FirstOrDefault();
+            if (straightFlush != null)
+            {
+                HandValue = PokerHand.StraightFlush;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool IsFlush(List<Card> cardsToCheck)
+        {
+            List<Card> sequencedCards = CheckForSequences(cardsToCheck);
+            IEnumerable<Card> flush = sequencedCards.GroupBy(x => x.Symbol).Where(x => x.Count() == 5).SelectMany(x => x.OrderBy(x => x.Symbol)).Take(5);
+            if (flush != null)
+            {
+                HandValue = PokerHand.Flush;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
@@ -80,9 +106,20 @@ namespace GameEngine.Core.Managers
             HighestCard = cards.OrderBy(x => x.Type).ElementAt(cards.Count - 1);
         }
 
-        private void IsStraight(List<Card> cards)
+        private bool IsStraight(List<Card> cards)
         {
             List<Card> sequencesCards = CheckForSequences(cards);
+            IEnumerable<Card> noDuplicates = sequencesCards.Distinct().ToList();
+            IEnumerable<Card> straight = noDuplicates.OrderByDescending(x => x.Type).Take(5);
+            if (straight != null)
+            {
+                HandValue = PokerHand.Straight;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private List<Card> CheckForSequences(List<Card> cards)
@@ -110,16 +147,12 @@ namespace GameEngine.Core.Managers
                     //If the sequence ends on the last cards in the list
                     if (i == cards.Count - 1)
                     {
-                        sequences.Add(new Card(NextCardValue, NextCardSymbol));
+                            sequences.Add(new Card(NextCardValue, NextCardSymbol));
                     }
 
                     else
                     {
                         sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
-                        if (SequenceCounter <= 2)
-                        {
-                            sequences.Add(new Card(NextCardValue, NextCardSymbol));
-                        }
                     }
                 }
             }
@@ -278,37 +311,6 @@ namespace GameEngine.Core.Managers
         //        }
         //    }
         //    return duplicates;
-        //}
-
-
-
-        //IS ROYAL FLUSH CHECK without Linq
-
-        //bool isValuesCorrect = false;
-        //bool isSymbolsCorrect = false;
-
-        ////TODO: Fix ordering so it orders by value, then symbol
-        //cardsToCheck.GroupBy(x => x.Symbol).FirstOrDefault();
-        //if (cardsToCheck[0].Type == CardTypes.Ten
-        //    && cardsToCheck[1].Type == CardTypes.Pawn
-        //    && cardsToCheck[2].Type == CardTypes.Queen
-        //    && cardsToCheck[3].Type == CardTypes.King
-        //    && cardsToCheck[4].Type == CardTypes.Ace)
-        //    isValuesCorrect = true;
-
-        //if (cardsToCheck[0].Symbol == cardsToCheck[4].Symbol
-        //    && cardsToCheck[1].Symbol == cardsToCheck[4].Symbol
-        //    && cardsToCheck[2].Symbol == cardsToCheck[4].Symbol
-        //    && cardsToCheck[3].Symbol == cardsToCheck[4].Symbol)
-        //    isSymbolsCorrect = true;
-
-        //if (isValuesCorrect && isSymbolsCorrect)
-        //{
-        //    return true;
-        //}
-        //else
-        //{
-        //    return false;
         //}
     }
 }

@@ -248,7 +248,7 @@ namespace GameEngine.Core.Managers
         {
             if (_context.Card == null || _context.Card.ToList().Count() == 0)
             {
-                _context.Card.AddRange(GetNewCardDeck());
+                _context.Card?.AddRange(GetNewCardDeck());
             } 
 
             pokerTable.Players = players;
@@ -311,6 +311,15 @@ namespace GameEngine.Core.Managers
             return pokerTable.Players[playerIndex + 1];
         }
 
+        private bool IsLastPlayer(PokerTable pokerTable, int currentPlayerId) 
+        {
+            int lastPlayerId = pokerTable.Players.Last().Id;
+            if(lastPlayerId == currentPlayerId)
+                return true;
+
+            return false;
+        }
+
         public PokerTable GetCurrentGame(int tableId)
         {
             PokerTable? pokerTable = _context.Table.First(x => x.Id == tableId);
@@ -337,6 +346,8 @@ namespace GameEngine.Core.Managers
             return pokerTable;
         }
 
+        #region Clear/Reset methods
+
         public async Task<PokerTable> RemovePlayerCards(PokerTable pokerTable)
         {
             foreach (var player in pokerTable.Players)
@@ -360,12 +371,13 @@ namespace GameEngine.Core.Managers
             return pokerTable;
         }
 
-        public async Task<PokerTable> GiveCardsToTable(int amountOfCards, PokerTable pokerTable) 
+        #region Give Cards methods
+        public async Task<PokerTable> GiveCardsToTable(int amountOfCards, PokerTable pokerTable)
         {
             if (pokerTable.CardDeck != null && pokerTable.CardDeck.Count > 0)
             {
                 Stack<Card> cards = new Stack<Card>(DataManager.GetCardsFromDeck(pokerTable.CardDeck));
-                
+
                 for (int i = 0; i < amountOfCards; i++)
                 {
                     if (pokerTable.Cards == null)
@@ -392,8 +404,8 @@ namespace GameEngine.Core.Managers
                 {
                     foreach (var player in pokerTable.Players)
                     {
-                        int cardId = cards.Peek().Id;   
-                        if(player.Cards == null)
+                        int cardId = cards.Peek().Id;
+                        if (player.Cards == null)
                             player.Cards = new List<PlayerCard>();
 
                         player.Cards.Add(new PlayerCard() { PlayerId = player.Id, Card = cards.Pop(), CardId = cardId });
@@ -407,6 +419,8 @@ namespace GameEngine.Core.Managers
             return pokerTable;
         }
 
+        #endregion
+
         public async Task<PokerTable> ClearTable(PokerTable pokerTable)
         {
             pokerTable.Cards?.Clear();
@@ -419,15 +433,26 @@ namespace GameEngine.Core.Managers
 
             return pokerTable;
         }
-        
+
+        #endregion
+
         public PokerTable GetNewCardDeck(PokerTable pokerTable)
         {
             if (_context.Card.ToList().Count == 0)
                 _context.Card.AddRange(GetNewCardDeck());
 
-
+            // Get Cards from database
 
             return pokerTable;
+        }
+
+        
+        public void EndRound(PokerTable pokerTable) 
+        {
+            
+
+
+
         }
 
         public void EndGame(PokerTable pokerTable)
@@ -451,18 +476,33 @@ namespace GameEngine.Core.Managers
         /// <returns></returns>
         public bool PlayerBet(BetEvent betEvent, string betType) 
         {
-            GameState gameState = new GameState();
-            Player? player = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == betEvent.PlayerId);
+            PokerTable? pokerTable = _context.Table.FirstOrDefault(x => x.Id == betEvent.PokerTableId);
+            
+            if(pokerTable == null)
+                return false;
 
+            Player? player = pokerTable.Players.FirstOrDefault(x => x.Id == betEvent.PlayerId);
             if (player != null)
             {
                 if (player.ChipsValue < betEvent.BetAmount)
                     return false;
 
-                player.CurrentBet = betEvent.BetAmount;
+                switch (betType)
+                {
+                    case "Call":
+                        int highestBet = GetHighestBet(pokerTable.Players);
+                        player.ChipsValue -= (highestBet - player.CurrentBet);
+                        player.CurrentBet = highestBet;
+                        return true;
+
+                    default:
+                        break;
+                }
+
+                player.CurrentBet += betEvent.BetAmount;
                 player.ChipsValue -= betEvent.BetAmount;
 
-                gameState.PokerTable.ChipsValue += betEvent.BetAmount;
+                pokerTable.ChipsValue += betEvent.BetAmount;
                 
                 return true;
             }
@@ -472,12 +512,17 @@ namespace GameEngine.Core.Managers
 
         public bool PlayerTurnEvent(TurnEvent turnEvent, string turnType) 
         {
-            GameState gameState = new GameState();
-            Player? player = gameState.PokerTable.Players.FirstOrDefault(x => x.Id == turnEvent.PlayerId);
-            int highestBet = GetHighestBet(gameState.PokerTable.Players);
+            PokerTable? pokerTable = _context.Table.FirstOrDefault(x => x.Id == turnEvent.PokerTableId);
+            
+            if(pokerTable == null)
+                return false;
+
+            Player? player = pokerTable.Players.FirstOrDefault(x => x.Id == turnEvent.PlayerId);
             
             if (player != null)
             {
+                int highestBet = GetHighestBet(pokerTable.Players);
+                
                 switch (turnType)
                 {
                     case "Fold":
@@ -488,6 +533,9 @@ namespace GameEngine.Core.Managers
                         if (player.CurrentBet == highestBet)
                         {
                             PlayerCheck(turnEvent);
+                            if (IsLastPlayer(pokerTable, turnEvent.PlayerId))
+                                EndRound(pokerTable);
+
                             return true;
                         }
 
@@ -500,6 +548,8 @@ namespace GameEngine.Core.Managers
 
             return false;
         }
+
+        #region Player Events
 
         public bool PlayerCall(BetEvent betEvent)
         {
@@ -525,5 +575,8 @@ namespace GameEngine.Core.Managers
         {
             return PlayerTurnEvent(turnEvent, "Check");
         }
+
+        #endregion
+
     }
 }

@@ -1,6 +1,4 @@
-﻿using GameEngine.Core.Enums;
-using GameEngine.Core.Extentions;
-using GameEngine.Core.Managers;
+﻿using GameEngine.Core.Managers;
 using GameEngine.Data;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
@@ -53,11 +51,15 @@ namespace GameEngine.Controllers
 
         [HttpGet]
         [Route("StartNewGame")]
-        public IActionResult StartNewGame()
+        public IActionResult StartNewGame(List<User> users)
         {
             PokerTable pokerTable = new PokerTable();
-            
-            
+            List<Player> players = new List<Player>();
+
+            foreach (var user in users)
+            {
+                players.Add(new Player() { Id = user.Id, Name = user.Name, ChipsValue = 500 });
+            }
 
             if (_context.Card == null)
                 pokerTable.CardDeck = DataManager.GetDeckCards(GameManager.GetNewCardDeck(), pokerTable);
@@ -70,7 +72,7 @@ namespace GameEngine.Controllers
             }
 
             if (_gameState == null)
-                _gameState = _gameManager.StartNewGame(pokerTable).Result;
+                _gameState = _gameManager.StartNewGame(players, pokerTable).Result;
 
             _gameState = _gameManager.GiveCardsToPlayers(pokerTable).Result;
             _gameState = _gameManager.GiveCardsToTable(3, pokerTable).Result;

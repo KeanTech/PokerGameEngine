@@ -3,6 +3,7 @@ using GameEngine.Core.Services.Webhook;
 using GameEngine.Core.Services.Webhook.Models.Events;
 using GameEngine.Data;
 using GameEngine.Models.Events;
+using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameEngine.Controllers
@@ -21,7 +22,21 @@ namespace GameEngine.Controllers
             _context = context;
         }
 
-        [HttpPost]
+        [HttpPut]
+        [Route("StartNewGame")]
+        public IActionResult StartNewGame(IList<User> users) 
+        {
+            foreach (var user in users)
+            {
+               
+            }
+
+            //PokerTable pokerTable = _gameManager.StartNewGame().Result;
+
+            return Ok();
+        }
+
+        [HttpPut]
         [Route("Subscribe")]
         public IActionResult Subscribe(string callbackUrl, string userIdentifier, int tableId)
         {
@@ -30,39 +45,102 @@ namespace GameEngine.Controllers
 	        return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("Call")]
         public IActionResult Call(BetEvent betEvent) 
         {
-            // Make Webhook logic
+            if (betEvent.PokerTableId == 0)
+                return NotFound();
+
+            if (betEvent.PlayerId == 0)
+                return NotFound();
+
+            if (string.IsNullOrEmpty(betEvent.PlayerIdentifier))
+                return BadRequest();
+
+            if (betEvent.BetAmount == 0)
+                return BadRequest();
+
+            _gameManager.PlayerCall(betEvent);
+
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("Fold")]
-        public IActionResult Fold() 
+        public IActionResult Fold(TurnEvent turnEvent) 
         {
+            if (turnEvent.PokerTableId == 0)
+                return NotFound();
+
+            if (turnEvent.PlayerId == 0)
+                return NotFound();
+
+            if (string.IsNullOrEmpty(turnEvent.PlayerIdentifier))
+                return BadRequest();
+
+            _gameManager.PlayerFold(turnEvent);
+
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("Raise")]
-        public IActionResult Raise(Raise playerEvent) 
+        public IActionResult Raise(BetEvent betEvent) 
         {
+            if (betEvent.PokerTableId == 0)
+                return NotFound();
+
+            if (betEvent.PlayerId == 0)
+                return NotFound();
+
+            if (string.IsNullOrEmpty(betEvent.PlayerIdentifier))
+                return BadRequest();
+
+            if (betEvent.BetAmount == 0)
+                return BadRequest();
+
+            _gameManager.PlayerRaise(betEvent);
+
             return Ok();   
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("Check")]
-        public IActionResult Check() 
+        public IActionResult Check(TurnEvent turnEvent) 
         {
+            if (turnEvent.PokerTableId == 0)
+                return NotFound();
+
+            if (turnEvent.PlayerId == 0)
+                return NotFound();
+
+            if (string.IsNullOrEmpty(turnEvent.PlayerIdentifier))
+                return BadRequest();
+
+            _gameManager.PlayerCheck(turnEvent);
+
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("AllIn")]
-        public IActionResult AllIn() 
+        public IActionResult AllIn(BetEvent betEvent) 
         {
+            if (betEvent.PokerTableId == 0)
+                return NotFound();
+
+            if (betEvent.PlayerId == 0)
+                return NotFound();
+
+            if (string.IsNullOrEmpty(betEvent.PlayerIdentifier))
+                return BadRequest();
+
+            if (betEvent.BetAmount == 0)
+                return BadRequest();
+
+            _gameManager.PlayerRaise(betEvent);
+
             return Ok();
         }
 

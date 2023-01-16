@@ -1,4 +1,5 @@
 ﻿using GameEngine.Core.Enums;
+using GameEngine.Core.Services.Webhook;
 using GameEngine.Data;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
@@ -7,39 +8,251 @@ namespace GameEngine.Core.Managers
 {
     public class GameManager : IGameManager
     {
-        private static Card[] defaultCardDeck = new Card[] 
-        {   
+        private static List<Card> defaultCardDeck = new List<Card> 
+        {
+            #region Clubs     
+
             new Card() 
             {
-                Id = 0, Symbol = Symbols.Club, Type = CardTypes.Two 
+                Symbol = Symbols.Club, Type = CardTypes.Two 
             },
             new Card()
             {
-                Id = 1, Symbol = Symbols.Club, Type = CardTypes.Three
+                Symbol = Symbols.Club, Type = CardTypes.Three
             }, 
             new Card()
             {
-                Id = 2, Symbol = Symbols.Club, Type = CardTypes.Four
+                Symbol = Symbols.Club, Type = CardTypes.Four
             },
             new Card()
             {
-                Id = 3, Symbol= Symbols.Club, Type = CardTypes.Five
+                Symbol= Symbols.Club, Type = CardTypes.Five
             },
             new Card()
             {
-                Id = 4, Symbol = Symbols.Club, Type = CardTypes.Six
-            }
-        };
-        private Stack<Card> _cards = new Stack<Card>(defaultCardDeck);
-        private readonly GameEngineContext _context;
+                Symbol = Symbols.Club, Type = CardTypes.Six
+            }, 
+            new Card()
+            {
+                Symbol= Symbols.Club, Type = CardTypes.Seven
+            },
+            new Card()
+            {
+                Symbol= Symbols.Club, Type = CardTypes.Eight
+            },
+            new Card()
+            {
+                Symbol= Symbols.Club, Type = CardTypes.Nine
+            },
+            new Card()
+            {
+                Symbol= Symbols.Club, Type = CardTypes.Ten
+            },
+            new Card()
+            {
+                Symbol= Symbols.Club, Type = CardTypes.Pawn
+            },
+            new Card()
+            {
+                Symbol= Symbols.Club, Type = CardTypes.Queen
+            },
+            new Card()
+            {
+                Symbol= Symbols.Club, Type = CardTypes.King
+            },
+            new Card()
+            {
+                Symbol= Symbols.Club, Type = CardTypes.Ace
+            },
+            #endregion
 
-        public GameManager(GameEngineContext context) 
+            #region Hearts
+
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Two
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Three
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Four
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Five
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Six
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Seven
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Eight
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Nine
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Ten
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Pawn
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Queen
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.King
+            },
+            new Card()
+            {
+                Symbol= Symbols.Heart, Type = CardTypes.Ace
+            },
+            #endregion
+
+            #region Spade
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Two
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Three
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Four
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Five
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Six
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Seven
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Eight
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Nine
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Ten
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Pawn
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Queen
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.King
+                        },
+                        new Card()
+                        {
+                            Symbol= Symbols.Spade, Type = CardTypes.Ace
+                        },
+            #endregion
+
+            #region Diamond
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Two
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Three
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Four
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Five
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Six
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Seven
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Eight
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Nine
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Ten
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Pawn
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Queen
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.King
+                                    },
+                                    new Card()
+                                    {
+                                        Symbol= Symbols.Diamond, Type = CardTypes.Ace
+                                    },
+	            #endregion
+        };
+        
+        private readonly GameEngineContext _context;
+        private readonly IWebhookService _webhookService;
+
+        public GameManager(GameEngineContext context, IWebhookService webhookService) 
         {
             _context = context;
+            _webhookService = webhookService;
         }
 
-        public async Task<PokerTable> StartNewGame(PokerTable pokerTable) 
+        public static List<Card> GetNewCardDeck() => defaultCardDeck;
+
+        public async Task<PokerTable> StartNewGame(IList<Player> players, PokerTable pokerTable) 
         {
+            if (_context.Card == null || _context.Card.ToList().Count() == 0)
+            {
+                _context.Card.AddRange(GetNewCardDeck());
+            } 
+
+            pokerTable.Players = players;
+
             _context.Table.Update(pokerTable);
             await _context.SaveChangesAsync();
 
@@ -52,9 +265,9 @@ namespace GameEngine.Core.Managers
 
             return highestBet;
         }
-        private Player? FindNextPlayer(PokerTable pokerTable)
+        private Player? FindNextPlayer(PokerTable pokerTable, int currentPlayerId)
         {
-            Player? currentPlayer = pokerTable.Players.FirstOrDefault(x => x.Id == pokerTable.CurrentPlayerId);
+            Player? currentPlayer = pokerTable.Players.FirstOrDefault(x => x.Id == currentPlayerId);
 
             if (currentPlayer == null)
                 return null;
@@ -63,19 +276,45 @@ namespace GameEngine.Core.Managers
             // make check for fold
 
             if (playerIndex == pokerTable.Players.Count - 1)
-                return pokerTable.Players.First();
+            {
+                Player firstPlayer = pokerTable.Players.First();
+
+                if (firstPlayer.IsFolded == false)
+                    return firstPlayer;
+
+                playerIndex = pokerTable.Players.IndexOf(firstPlayer);
+                
+                // Make method for this 
+                for (int i = playerIndex; i < pokerTable.Players.Count; i++)
+                {
+                    if (pokerTable.Players[i].IsFolded == false)
+                        return pokerTable.Players[i];
+                }
+            }
+
+            Player nextPlayer = pokerTable.Players[playerIndex + 1];
+
+            if (nextPlayer.IsFolded)
+            {
+                playerIndex = pokerTable.Players.IndexOf(nextPlayer);
+
+                // Make method for this 
+                for (int i = playerIndex; i < pokerTable.Players.Count; i++)
+                {
+                    if (pokerTable.Players[i].IsFolded == false)
+                        return pokerTable.Players[i];
+                }
+            }
+
+
 
             return pokerTable.Players[playerIndex + 1];
         }
 
         public PokerTable GetCurrentGame(int tableId)
         {
-            // User GameStateService to get the current game state
-            // this should get called when the gameController get call 
-            // Update this
-            // Game stat is used to see the previous players turn and set the next players turn
-
-            return new GameState();
+            PokerTable? pokerTable = _context.Table.First(x => x.Id == tableId);
+            return pokerTable;
         } 
 
         public async Task<PokerTable> UpdateGameState(PokerTable pokerTable)
@@ -129,6 +368,9 @@ namespace GameEngine.Core.Managers
                 
                 for (int i = 0; i < amountOfCards; i++)
                 {
+                    if (pokerTable.Cards == null)
+                        pokerTable.Cards = new List<TableCard>();
+
                     pokerTable.Cards.Add(new TableCard() { TableId = pokerTable.Id, Card = cards.Pop() });
                 }
 
@@ -151,6 +393,9 @@ namespace GameEngine.Core.Managers
                     foreach (var player in pokerTable.Players)
                     {
                         int cardId = cards.Peek().Id;   
+                        if(player.Cards == null)
+                            player.Cards = new List<PlayerCard>();
+
                         player.Cards.Add(new PlayerCard() { PlayerId = player.Id, Card = cards.Pop(), CardId = cardId });
                     }
                 }
@@ -233,13 +478,12 @@ namespace GameEngine.Core.Managers
                 {
                     case "Fold":
                         player.IsFolded = true; 
-                        SetPlayerTurn(gameState);
                         return true;
 
                     case "Check":
                         if (player.CurrentBet == highestBet)
-                        { 
-                            SetPlayerTurn(gameState);
+                        {
+                            PlayerCheck(turnEvent);
                             return true;
                         }
 

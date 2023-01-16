@@ -1,4 +1,5 @@
 ﻿using GameEngine.Core.Enums;
+using GameEngine.Core.Extentions;
 using GameEngine.Core.Managers;
 using GameEngine.Data;
 using GameEngine.Models.Events;
@@ -51,27 +52,28 @@ namespace GameEngine.Controllers
 
 
         [HttpGet]
-        [Route("CreateNewGame")]
-        public IActionResult Index()
+        [Route("StartNewGame")]
+        public IActionResult StartNewGame()
         {
-            PokerTable pokerTable = new PokerTable()
+            PokerTable pokerTable = new PokerTable();
+            
+            
+
+            if (_context.Card == null)
+                pokerTable.CardDeck = DataManager.GetDeckCards(GameManager.GetNewCardDeck(), pokerTable);
+            else
+                pokerTable.CardDeck = DataManager.GetDeckCards(_context.Card.ToList(), pokerTable);
+
+            for (int i = 0; i < 10; i++)
             {
-                Players = new List<Player>()
-                {
-                    new Player() { Name = "Player1", ChipsValue = 500 },
-                    new Player() { Name = "Player2", ChipsValue = 500 }
-                },
-                CardDeck = new List<DeckCard>() 
-                {
-                    new DeckCard() {  }
-                }
-            };
+                pokerTable.CardDeck.Shuffle<DeckCard>();
+            }
 
             if (_gameState == null)
                 _gameState = _gameManager.StartNewGame(pokerTable).Result;
 
-            _gameManager.GiveCardsToPlayers(pokerTable);
-            _gameManager.GiveCardsToTable(3, pokerTable);
+            _gameState = _gameManager.GiveCardsToPlayers(pokerTable).Result;
+            _gameState = _gameManager.GiveCardsToTable(3, pokerTable).Result;
 
             return Ok(_gameState);
         }
@@ -88,16 +90,7 @@ namespace GameEngine.Controllers
         [Route("Call")]
         public IActionResult Call(BetEvent betEvent) 
         {
-            //GameState gameState = new GameState(); /// Get gameState from service with <see cref="BetEvent.PokerTableId"/>
-
-            if (IsValidGameState(_gameState) == false)
-                return BadRequest();
-
-            if (DoesPlayerExistOnTable(_gameState, betEvent.PlayerId))
-                return NotFound();
-
-
-
+            
             return Ok();
         }
 

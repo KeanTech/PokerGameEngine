@@ -1,19 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.ComponentModel.DataAnnotations.Schema;
-using GameEngine.Data;
 
 namespace GameEngine.Models.Game
 {
-    public class Player
+    public class GamePlayer
     {
-        [ForeignKey("User")]
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int UserId { get; set; }
+        public string UserName { get; set; }
         public int CurrentBet { get; set; }
         public int ChipsValue { get; set; }
         public IList<PlayerCard> Cards { get; set; }
         public bool IsFolded { get; set; }
 
+        public GamePlayer() 
+        {
+            
+        }
+
+       
     }
 }

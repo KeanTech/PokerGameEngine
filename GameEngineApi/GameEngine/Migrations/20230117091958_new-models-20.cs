@@ -5,7 +5,7 @@
 namespace GameEngine.Migrations
 {
     /// <inheritdoc />
-    public partial class newmodels1 : Migration
+    public partial class newmodels20 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -137,12 +137,10 @@ namespace GameEngine.Migrations
                 name: "Player",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CurrentBet = table.Column<int>(type: "int", nullable: false),
                     Chips = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
                     IsFolded = table.Column<bool>(type: "bit", nullable: false),
                     PokerTableId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -150,8 +148,8 @@ namespace GameEngine.Migrations
                 {
                     table.PrimaryKey("PK_Player", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Player_User_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Player_User_Id",
+                        column: x => x.Id,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -184,6 +182,27 @@ namespace GameEngine.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Subscribe",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TableId = table.Column<int>(type: "int", nullable: false),
+                    CallbackUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserSecret = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscribe", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Subscribe_Table_TableId",
+                        column: x => x.TableId,
+                        principalTable: "Table",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Accessory_UserId",
                 table: "Accessory",
@@ -210,9 +229,9 @@ namespace GameEngine.Migrations
                 column: "PokerTableId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Player_UserId",
-                table: "Player",
-                column: "UserId");
+                name: "IX_Subscribe_TableId",
+                table: "Subscribe",
+                column: "TableId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Table_DeckId",
@@ -253,7 +272,7 @@ namespace GameEngine.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Player_User_UserId",
+                name: "FK_Player_User_Id",
                 table: "Player");
 
             migrationBuilder.DropForeignKey(
@@ -275,6 +294,9 @@ namespace GameEngine.Migrations
 
             migrationBuilder.DropTable(
                 name: "CardPokerTable");
+
+            migrationBuilder.DropTable(
+                name: "Subscribe");
 
             migrationBuilder.DropTable(
                 name: "Card");

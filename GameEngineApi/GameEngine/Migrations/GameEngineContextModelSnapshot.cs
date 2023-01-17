@@ -153,10 +153,7 @@ namespace GameEngine.Migrations
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Chips")
                         .HasColumnType("int");
@@ -174,14 +171,9 @@ namespace GameEngine.Migrations
                     b.Property<int?>("PokerTableId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PokerTableId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Player");
                 });
@@ -307,15 +299,15 @@ namespace GameEngine.Migrations
 
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
+                    b.HasOne("GameEngine.Models.Game.User", "User")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GameEngine.Models.Game.PokerTable", null)
                         .WithMany("Players")
                         .HasForeignKey("PokerTableId");
-
-                    b.HasOne("GameEngine.Models.Game.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });

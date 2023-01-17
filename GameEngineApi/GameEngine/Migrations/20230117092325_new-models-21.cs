@@ -5,7 +5,7 @@
 namespace GameEngine.Migrations
 {
     /// <inheritdoc />
-    public partial class newmodels4 : Migration
+    public partial class newmodels21 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

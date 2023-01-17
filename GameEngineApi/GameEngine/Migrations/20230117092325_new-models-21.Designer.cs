@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameEngine.Migrations
 {
     [DbContext(typeof(GameEngineContext))]
-    [Migration("20230117081550_new-models-4")]
-    partial class newmodels4
+    [Migration("20230117092325_new-models-21")]
+    partial class newmodels21
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -156,10 +156,7 @@ namespace GameEngine.Migrations
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Chips")
                         .HasColumnType("int");
@@ -177,14 +174,9 @@ namespace GameEngine.Migrations
                     b.Property<int?>("PokerTableId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PokerTableId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Player");
                 });
@@ -310,15 +302,15 @@ namespace GameEngine.Migrations
 
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
+                    b.HasOne("GameEngine.Models.Game.User", "User")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GameEngine.Models.Game.PokerTable", null)
                         .WithMany("Players")
                         .HasForeignKey("PokerTableId");
-
-                    b.HasOne("GameEngine.Models.Game.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -8,6 +8,7 @@ namespace GameEngine.Models.Game
     public class PokerTable
     {
 		public int Id { get; set; }
+        [ForeignKey("Player")]
         public int OwnerId { get; set; }
         public Player Owner { get; set; }
         public IList<Card> Cards { get; set; }

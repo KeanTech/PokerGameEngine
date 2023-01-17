@@ -18,7 +18,6 @@ namespace GameEngine.Data
 			new {
 				e.Symbol, e.Type
 			});
-
 			modelBuilder.Entity<PokerTable>().HasOne(e => e.Owner).WithOne(e => e.Table);
 
 		}

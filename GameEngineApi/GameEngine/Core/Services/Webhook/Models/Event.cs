@@ -13,6 +13,7 @@
 		PlayerJoined,
 		PlayerLeft,
 		GameStart,
-		RoundEnd
+		RoundEnd,
+		PlayerReady
 	}
 }

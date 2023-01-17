@@ -1,9 +1,12 @@
 ﻿using GameEngine.Core.Managers;
 using GameEngine.Core.Services.Webhook;
+using GameEngine.Core.Services.Webhook.Models;
+using GameEngine.Core.Services.Webhook.Models.Events;
 using GameEngine.Data;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 
 namespace GameEngine.Controllers
 {
@@ -15,10 +18,11 @@ namespace GameEngine.Controllers
         private readonly IWebhookService _service;
         private readonly GameEngineContext _context;
 
-        public GameController(IWebhookService service, GameEngineContext context)
+        public GameController(IWebhookService service, GameEngineContext context, GameManager gameManager)
         {
             _service = service;
             _context = context;
+            _gameManager = gameManager;
         }
 
         [HttpPut]
@@ -29,7 +33,30 @@ namespace GameEngine.Controllers
             if (pokerTable == null)
                 return NotFound();
 
+            if (startingChipAmount == 0)
+                return BadRequest();
+
             pokerTable = _gameManager.StartNewGame(pokerTable, startingChipAmount).Result;
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("SetPlayerReady")]
+        public IActionResult SetPlayerReady(int userId, int tableId) 
+        {
+            User? user = _context.User.FirstOrDefault(x => x.Id == userId);
+            
+            if(user == null)
+                return NotFound();  
+            
+            PokerTable? pokerTable = _context.Table.FirstOrDefault(x => x.Id == tableId);
+
+            if (pokerTable == null)
+                return NotFound();
+
+            PlayerEvent playerEvent = new PlayerEvent(user.UserSecret, Event.PlayerReady, user.Id);
+            _service.NotifySubscribersOfPlayerEvent(playerEvent, tableId);
 
             return Ok();
         }
@@ -61,13 +88,7 @@ namespace GameEngine.Controllers
         public IActionResult CreateTable(User inputUser)
         {
             PokerTable pokerTable = new PokerTable();
-            // create card deck in db if theres non
-            if (_context.Card.Count() == 0)
-            {
-                _context.Card.AddRange(GameManager.GetNewCardDeck());
-                _context.SaveChanges();
-            }
-
+            
             if (pokerTable.Deck == null)
                 pokerTable.Deck = new Deck();
 

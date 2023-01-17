@@ -1,8 +1,11 @@
 ﻿using GameEngine.Core.Enums;
 using GameEngine.Core.Services.Webhook;
+using GameEngine.Core.Services.Webhook.Models.Events;
+using GameEngine.Core.Services.Webhook.Models;
 using GameEngine.Data;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace GameEngine.Core.Managers
 {
@@ -29,6 +32,14 @@ namespace GameEngine.Core.Managers
 
             _context.Table.Update(pokerTable);
             await _context.SaveChangesAsync();
+
+
+            PlayerEvent playerEvent = new PlayerEvent(pokerTable.Owner.User.UserSecret, Event.GameStart, pokerTable.Id);
+            await _webhookService.NotifySubscribersOfPlayerEvent(playerEvent, pokerTable.Id);
+
+            Player startingPlayer = pokerTable.Players.First();
+            WebhookEvent webhookEvent = new WebhookEvent("", Event.PlayerTurn);
+            await _webhookService.NotifySubscriberOfStateEvent(startingPlayer.User.UserSecret, pokerTable.Id, webhookEvent);
 
             // Make call to webhookService !!
 
@@ -81,8 +92,6 @@ namespace GameEngine.Core.Managers
                         return pokerTable.Players[i];
                 }
             }
-
-
 
             return pokerTable.Players[playerIndex + 1];
         }

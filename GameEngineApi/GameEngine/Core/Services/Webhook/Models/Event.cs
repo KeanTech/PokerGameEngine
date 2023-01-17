@@ -14,6 +14,8 @@
 		PlayerLeft,
 		GameStart,
 		RoundEnd,
-		PlayerReady
+		PlayerReady,
+		TableCreated,
+		PlayerTurn
 	}
 }

@@ -38,18 +38,19 @@ namespace GameEngine.Controllers
 
             pokerTable = _gameManager.StartNewGame(pokerTable, startingChipAmount).Result;
 
+            
             return Ok();
         }
 
         [HttpPut]
         [Route("SetPlayerReady")]
-        public IActionResult SetPlayerReady(int userId, int tableId) 
+        public IActionResult SetPlayerReady(int userId, int tableId)
         {
             User? user = _context.User.FirstOrDefault(x => x.Id == userId);
-            
-            if(user == null)
-                return NotFound();  
-            
+
+            if (user == null)
+                return NotFound();
+
             PokerTable? pokerTable = _context.Table.FirstOrDefault(x => x.Id == tableId);
 
             if (pokerTable == null)
@@ -68,18 +69,18 @@ namespace GameEngine.Controllers
             User? user = _context.User.FirstOrDefault(x => x.Id == userId);
             if (user == null)
                 return NotFound();
-            
+
             PokerTable? pokerTable = _context.Table.FirstOrDefault(x => x.Id == tableId);
-            if(pokerTable == null)
+            if (pokerTable == null)
                 return NotFound();
 
-            Player player = new Player() { Table = pokerTable, User = user, Cards = new List<Card>() }; 
+            Player player = new Player() { Table = pokerTable, User = user, Cards = new List<Card>() };
             pokerTable.Players.Add(player);
-           
+
             _context.SaveChanges();
 
-            // Subscrib user to webhook
-            //Subscribe();
+            PlayerEvent playerEvent = new PlayerEvent(user.UserSecret, Event.PlayerJoined, player.Id);
+            _service.NotifySubscribersOfPlayerEvent(playerEvent, tableId);
             return Ok();
         }
 
@@ -88,7 +89,7 @@ namespace GameEngine.Controllers
         public IActionResult CreateTable(User inputUser)
         {
             PokerTable pokerTable = new PokerTable();
-            
+
             if (pokerTable.Deck == null)
                 pokerTable.Deck = new Deck();
 
@@ -98,34 +99,27 @@ namespace GameEngine.Controllers
             pokerTable.Deck.Cards = _context.Card.ToList();
             var user = _context.User.FirstOrDefault(x => x.Id == inputUser.Id);
 
+            if(user == null) 
+                return NotFound();
+            
             Player player = new Player();
-            if (user != null)
-            { 
-                player = new Player() { User = user, Cards = new List<Card>() };
-                _context.Player.Add(player);       
-                _context.SaveChanges();
-                pokerTable.Owner = player;
-                pokerTable.OwnerId = player.Id;
-            }
+            player = new Player() { User = user, Cards = new List<Card>() };
+            _context.Player.Add(player);
+            _context.SaveChanges();
+            pokerTable.Owner = player;
+            pokerTable.OwnerId = player.Id;
+
 
             _context.Table.Add(pokerTable);
             _context.SaveChanges();
 
-            player.Table= pokerTable;
+            player.Table = pokerTable;
             _context.Update(player);
             _context.SaveChanges();
 
-            // subscrib to webhook (user)
+            WebhookEvent webhookEvent = new WebhookEvent("secret", Event.TableCreated);
+            _service.NotifySubscriberOfStateEvent(user.UserSecret, pokerTable.Id, webhookEvent);
 
-            return Ok();
-        }
-
-        [HttpPut]
-        [Route("Subscribe")]
-        public IActionResult Subscribe(string callbackUrl, string userIdentifier, int tableId)
-        {
-            // Make Webhook logic
-            _service.Subscribe(callbackUrl, userIdentifier, tableId);
             return Ok();
         }
 

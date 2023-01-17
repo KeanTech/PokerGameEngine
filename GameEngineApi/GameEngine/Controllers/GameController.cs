@@ -28,10 +28,11 @@ namespace GameEngine.Controllers
         [Route("StartNewGame")]
         public IActionResult StartNewGame(int tableId)
         {
-            PokerTable pokerTable = _context.Table.FirstOrDefault(x => x.Id == tableId);
+            PokerTable? pokerTable = _context.Table.FirstOrDefault(x => x.Id == tableId);
             if (pokerTable == null)
                 return NotFound();
 
+            pokerTable = _gameManager.StartNewGame(pokerTable, 500).Result;
 
             return Ok();
         }
@@ -95,6 +96,8 @@ namespace GameEngine.Controllers
             player.Table= pokerTable;
             _context.Update(player);
             _context.SaveChanges();
+
+            // subscrib to webhook (user)
 
             return Ok();
         }

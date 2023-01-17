@@ -8,231 +8,6 @@ namespace GameEngine.Core.Managers
 {
     public class GameManager : IGameManager
     {
-        private static List<Card> defaultCardDeck = new List<Card> 
-        {
-            #region Clubs     
-
-            new Card() 
-            {
-                Symbol = Symbols.Club, Type = CardTypes.Two 
-            },
-            new Card()
-            {
-                Symbol = Symbols.Club, Type = CardTypes.Three
-            }, 
-            new Card()
-            {
-                Symbol = Symbols.Club, Type = CardTypes.Four
-            },
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.Five
-            },
-            new Card()
-            {
-                Symbol = Symbols.Club, Type = CardTypes.Six
-            }, 
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.Seven
-            },
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.Eight
-            },
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.Nine
-            },
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.Ten
-            },
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.Pawn
-            },
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.Queen
-            },
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.King
-            },
-            new Card()
-            {
-                Symbol= Symbols.Club, Type = CardTypes.Ace
-            },
-            #endregion
-
-            #region Hearts
-
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Two
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Three
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Four
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Five
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Six
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Seven
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Eight
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Nine
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Ten
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Pawn
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Queen
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.King
-            },
-            new Card()
-            {
-                Symbol= Symbols.Heart, Type = CardTypes.Ace
-            },
-            #endregion
-
-            #region Spade
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Two
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Three
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Four
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Five
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Six
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Seven
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Eight
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Nine
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Ten
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Pawn
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Queen
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.King
-                        },
-                        new Card()
-                        {
-                            Symbol= Symbols.Spade, Type = CardTypes.Ace
-                        },
-            #endregion
-
-            #region Diamond
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Two
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Three
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Four
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Five
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Six
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Seven
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Eight
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Nine
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Ten
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Pawn
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Queen
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.King
-                                    },
-                                    new Card()
-                                    {
-                                        Symbol= Symbols.Diamond, Type = CardTypes.Ace
-                                    },
-	            #endregion
-        };
-        
         private readonly GameEngineContext _context;
         private readonly IWebhookService _webhookService;
 
@@ -242,17 +17,20 @@ namespace GameEngine.Core.Managers
             _webhookService = webhookService;
         }
 
-        public static List<Card> GetNewCardDeck() => defaultCardDeck;
-
-        public async Task<PokerTable> StartNewGame(PokerTable pokerTable) 
+        public async Task<PokerTable> StartNewGame(PokerTable pokerTable, int amountOfStartingChips) 
         {
-            if (_context.Card == null || _context.Card.ToList().Count() == 0)
+            await GiveCardsToPlayers(pokerTable);
+            await GiveCardsToTable(3, pokerTable);
+
+            foreach (var player in pokerTable.Players)
             {
-                _context.Card?.AddRange(GetNewCardDeck());
-            } 
+                player.Chips = amountOfStartingChips;
+            }
 
             _context.Table.Update(pokerTable);
             await _context.SaveChangesAsync();
+
+            // Make call to webhookService !!
 
             return pokerTable;   
         }
@@ -344,31 +122,6 @@ namespace GameEngine.Core.Managers
             return pokerTable;
         }
 
-        #region Clear/Reset methods
-
-        public async Task<PokerTable> RemovePlayerCards(PokerTable pokerTable)
-        {
-            foreach (var player in pokerTable.Players)
-            {
-                player.Cards.Clear();
-            }
-
-            await UpdateGameState(pokerTable);
-
-            return pokerTable;
-        }
-        public async Task<PokerTable> ResetPlayerBets(PokerTable pokerTable)
-        {
-            foreach (var player in pokerTable.Players)
-            {
-                player.CurrentBet = 0;
-            }
-
-            await UpdateGameState(pokerTable);
-
-            return pokerTable;
-        }
-
         #region Give Cards methods
         public async Task<PokerTable> GiveCardsToTable(int amountOfCards, PokerTable pokerTable)
         {
@@ -418,6 +171,32 @@ namespace GameEngine.Core.Managers
 
         #endregion
 
+
+        #region Clear/Reset methods
+
+        public async Task<PokerTable> RemovePlayerCards(PokerTable pokerTable)
+        {
+            foreach (var player in pokerTable.Players)
+            {
+                player.Cards.Clear();
+            }
+
+            await UpdateGameState(pokerTable);
+
+            return pokerTable;
+        }
+        public async Task<PokerTable> ResetPlayerBets(PokerTable pokerTable)
+        {
+            foreach (var player in pokerTable.Players)
+            {
+                player.CurrentBet = 0;
+            }
+
+            await UpdateGameState(pokerTable);
+
+            return pokerTable;
+        }
+
         public async Task<PokerTable> ClearTable(PokerTable pokerTable)
         {
             pokerTable.Cards?.Clear();
@@ -447,16 +226,20 @@ namespace GameEngine.Core.Managers
         public void EndRound(PokerTable pokerTable) 
         {
             
-
-
-
         }
 
-        public void EndGame(PokerTable pokerTable)
+        public bool EndGame(PokerTable pokerTable)
         {
-            GivePlayerStats(pokerTable.Players.FirstOrDefault(x => x.Chips > 0));
 
+            if (pokerTable == null)
+                return false;
 
+            Player? player = pokerTable.Players.FirstOrDefault(x => x.Chips > 0);
+            
+            if(player == null)
+                GivePlayerStats(player);
+
+            return true;
             // Delete data from db
         }
 

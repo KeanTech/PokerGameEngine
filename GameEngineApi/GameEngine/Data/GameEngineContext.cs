@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using GameEngine.Core.Services.Webhook.Models.Events;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using GameEngine.Models.Game;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using GameEngine.Core.Services.Webhook;
 
 namespace GameEngine.Data
 {
@@ -28,10 +23,11 @@ namespace GameEngine.Data
 
 		}
 
-		public DbSet<GameEngine.Models.Game.User> User { get; set; } = default!;
-		public DbSet<GameEngine.Models.Game.Player> Player { get; set; } = default!;
-		public DbSet<GameEngine.Models.Game.PokerTable> Table { get; set; } = default!;
-		public DbSet<GameEngine.Models.Game.Accessory> Accessory { get; set; } = default!;
-		public DbSet<GameEngine.Models.Game.Card> Card { get; set; } = default!;
+		public DbSet<User> User { get; set; } = default!;
+		public DbSet<Player> Player { get; set; } = default!;
+		public DbSet<PokerTable> Table { get; set; } = default!;
+		public DbSet<Accessory> Accessory { get; set; } = default!;
+		public DbSet<Card> Card { get; set; } = default!;
+		public DbSet<SubscribeModel> Subscribe { get; set; }
     }
 }

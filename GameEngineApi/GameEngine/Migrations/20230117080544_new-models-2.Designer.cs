@@ -4,6 +4,7 @@ using GameEngine.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameEngine.Migrations
 {
     [DbContext(typeof(GameEngineContext))]
-    partial class GameEngineContextModelSnapshot : ModelSnapshot
+    [Migration("20230117080544_new-models-2")]
+    partial class newmodels2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,8 +99,6 @@ namespace GameEngine.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TableId");
 
                     b.ToTable("Subscribe");
                 });
@@ -285,17 +286,6 @@ namespace GameEngine.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GameEngine.Core.Services.Webhook.SubscribeModel", b =>
-                {
-                    b.HasOne("GameEngine.Models.Game.PokerTable", "Table")
-                        .WithMany("Subscriptions")
-                        .HasForeignKey("TableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Table");
-                });
-
             modelBuilder.Entity("GameEngine.Models.Game.Accessory", b =>
                 {
                     b.HasOne("GameEngine.Models.Game.User", null)
@@ -348,8 +338,6 @@ namespace GameEngine.Migrations
             modelBuilder.Entity("GameEngine.Models.Game.PokerTable", b =>
                 {
                     b.Navigation("Players");
-
-                    b.Navigation("Subscriptions");
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.User", b =>

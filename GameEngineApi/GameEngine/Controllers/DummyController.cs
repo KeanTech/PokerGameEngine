@@ -58,17 +58,17 @@ namespace GameEngine.Controllers
 
             foreach (var user in users)
             {
-                players.Add(new Player() { Id = user.Id, Name = user.Name, ChipsValue = 500 });
+                players.Add(new Player() { Id = user.Id, Name = user.Name, Chips = 500 });
             }
 
             if (_context.Card == null)
-                pokerTable.CardDeck = DataManager.GetDeckCards(GameManager.GetNewCardDeck(), pokerTable);
+                pokerTable.Deck.Cards = GameManager.GetNewCardDeck();
             else
-                pokerTable.CardDeck = DataManager.GetDeckCards(_context.Card.ToList(), pokerTable);
+                pokerTable.Deck.Cards = _context.Card.ToList();
 
             for (int i = 0; i < 10; i++)
             {
-                pokerTable.CardDeck.Shuffle<DeckCard>();
+                pokerTable.Deck.Cards.Shuffle();
             }
 
             if (_gameState == null)

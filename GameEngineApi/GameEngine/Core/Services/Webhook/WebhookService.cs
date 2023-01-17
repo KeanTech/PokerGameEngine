@@ -1,4 +1,5 @@
-﻿using GameEngine.Core.Services.Webhook.Models.Events;
+﻿using GameEngine.Core.Services.Webhook.Exceptions;
+using GameEngine.Core.Services.Webhook.Models.Events;
 using GameEngine.Data;
 using RestSharp;
 
@@ -15,11 +16,16 @@ namespace GameEngine.Core.Services.Webhook
 			_context = context;
 		}
 
-		public void Subscribe(string callbackUrl, string userIdentifier, int tableId)
+		public void Subscribe(string callbackUrl, string userSecret, int tableId)
 		{
 			_context.Database.EnsureCreated();
+			var isSub = _context.Subscribe.Any(e => e.UserSecret.Equals(userSecret));
+			if (isSub)
+			{
+				throw new AlreadySubscribedException($"User with UserSecret:{userSecret} is already subscribed to this table with tableId:{tableId}");
+			}
 			_context.Subscribe.Add(new SubscribeModel()
-				{ CallbackUrl = callbackUrl, TableId = tableId, UserSecret = userIdentifier });
+				{ CallbackUrl = callbackUrl, TableId = tableId, UserSecret = userSecret });
 			_context.SaveChanges();
 		}
 

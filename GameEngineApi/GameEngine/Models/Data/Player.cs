@@ -7,6 +7,8 @@ namespace GameEngine.Models.Game
 {
     public class Player
     {
+        [ForeignKey("User")]
+        [Key]
         public int Id { get; set; }
         public int CurrentBet { get; set; }
         public int Chips { get; set; }

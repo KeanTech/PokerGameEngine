@@ -206,30 +206,5 @@ namespace GameEngine.Controllers
 
             return Ok();
         }
-
-        [HttpPost]
-        [Route("DbTest")]
-        public async Task TestData()
-        {
-            _context.Database.EnsureCreated();
-            var cards = new List<Card>();
-            foreach (Symbols symbol in Enum.GetValues(typeof(Symbols)))
-            {
-                foreach (CardTypes ct in Enum.GetValues(typeof(CardTypes)))
-                {
-                    cards.Add(new Card() { Symbol = symbol, Type = ct });
-                }
-            }
-            _context.Card.AddRange(cards);
-            try
-            {
-                _context.SaveChanges();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
     }
 }

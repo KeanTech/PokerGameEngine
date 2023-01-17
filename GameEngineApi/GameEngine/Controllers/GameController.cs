@@ -18,7 +18,7 @@ namespace GameEngine.Controllers
         private readonly IWebhookService _service;
         private readonly GameEngineContext _context;
 
-        public GameController(IWebhookService service, GameEngineContext context) 
+        public GameController(IWebhookService service, GameEngineContext context)
         {
             _service = service;
             _context = context;
@@ -26,14 +26,73 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("StartNewGame")]
-        public IActionResult StartNewGame(IList<User> users) 
+        public IActionResult StartNewGame(int tableId)
         {
-            foreach (var user in users)
-            {
-               
-            }
 
             //PokerTable pokerTable = _gameManager.StartNewGame().Result;
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("JoinTable")]
+        public IActionResult JoinTable(int userId, int tableId)
+        {
+            User? user = _context.User.FirstOrDefault(x => x.Id == userId);
+            if (user == null)
+                return NotFound();
+            
+            PokerTable? pokerTable = _context.Table.FirstOrDefault(x => x.Id == tableId);
+            if(pokerTable == null)
+                return NotFound();
+
+            Player player = new Player() { Table = pokerTable, User = user, Cards = new List<Card>() }; 
+            pokerTable.Players.Add(player);
+           
+            _context.SaveChanges();
+
+            // Subscrib user to webhook
+            //Subscribe();
+
+        }
+
+        [HttpPost]
+        [Route("CreateTable")]
+        public IActionResult CreateTable(User inputUser)
+        {
+            PokerTable pokerTable = new PokerTable();
+            // create card deck in db if theres non
+            if (_context.Card.Count() == 0)
+            {
+                _context.Card.AddRange(GameManager.GetNewCardDeck());
+                _context.SaveChanges();
+            }
+
+            if (pokerTable.Deck == null)
+                pokerTable.Deck = new Deck();
+
+            if (pokerTable.Deck.Cards == null)
+                pokerTable.Deck.Cards = new List<Card>();
+
+            pokerTable.Deck.Cards = _context.Card.ToList();
+            var user = _context.User.FirstOrDefault(x => x.Id == inputUser.Id);
+
+            Player player = new Player();
+            if (user != null)
+            { 
+                player = new Player() { User = user, Cards = new List<Card>() };
+                _context.Player.Add(player);       
+                _context.SaveChanges();
+                pokerTable.Owner = player;
+                pokerTable.OwnerId = player.Id;
+            }
+
+            _context.Table.Add(pokerTable);
+            _context.SaveChanges();
+
+            player.Table= pokerTable;
+            _context.Update(player);
+            _context.SaveChanges();
 
             return Ok();
         }
@@ -42,14 +101,14 @@ namespace GameEngine.Controllers
         [Route("Subscribe")]
         public IActionResult Subscribe(string callbackUrl, string userIdentifier, int tableId)
         {
-	        // Make Webhook logic
+            // Make Webhook logic
             _service.Subscribe(callbackUrl, userIdentifier, tableId);
-	        return Ok();
+            return Ok();
         }
 
         [HttpPut]
         [Route("Call")]
-        public IActionResult Call(BetEvent betEvent) 
+        public IActionResult Call(BetEvent betEvent)
         {
             if (betEvent.PokerTableId == 0)
                 return NotFound();
@@ -70,7 +129,7 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("Fold")]
-        public IActionResult Fold(TurnEvent turnEvent) 
+        public IActionResult Fold(TurnEvent turnEvent)
         {
             if (turnEvent.PokerTableId == 0)
                 return NotFound();
@@ -88,7 +147,7 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("Raise")]
-        public IActionResult Raise(BetEvent betEvent) 
+        public IActionResult Raise(BetEvent betEvent)
         {
             if (betEvent.PokerTableId == 0)
                 return NotFound();
@@ -104,12 +163,12 @@ namespace GameEngine.Controllers
 
             _gameManager.PlayerRaise(betEvent);
 
-            return Ok();   
+            return Ok();
         }
 
         [HttpPut]
         [Route("Check")]
-        public IActionResult Check(TurnEvent turnEvent) 
+        public IActionResult Check(TurnEvent turnEvent)
         {
             if (turnEvent.PokerTableId == 0)
                 return NotFound();
@@ -127,7 +186,7 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("AllIn")]
-        public IActionResult AllIn(BetEvent betEvent) 
+        public IActionResult AllIn(BetEvent betEvent)
         {
             if (betEvent.PokerTableId == 0)
                 return NotFound();
@@ -150,25 +209,25 @@ namespace GameEngine.Controllers
         [Route("DbTest")]
         public async Task TestData()
         {
-			_context.Database.EnsureCreated();
-			var cards = new List<Card>();
-			foreach (Symbols symbol in Enum.GetValues(typeof(Symbols)))
-			{
-				foreach (CardTypes ct in Enum.GetValues(typeof(CardTypes)))
-				{
-					cards.Add(new Card(){Symbol = symbol, Type = ct});
-				}
-			}
-			_context.Card.AddRange(cards);
-			try
-			{
-				_context.SaveChanges();
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e);
-			}
-		}
+            _context.Database.EnsureCreated();
+            var cards = new List<Card>();
+            foreach (Symbols symbol in Enum.GetValues(typeof(Symbols)))
+            {
+                foreach (CardTypes ct in Enum.GetValues(typeof(CardTypes)))
+                {
+                    cards.Add(new Card() { Symbol = symbol, Type = ct });
+                }
+            }
+            _context.Card.AddRange(cards);
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
 
     }
 }

@@ -244,14 +244,12 @@ namespace GameEngine.Core.Managers
 
         public static List<Card> GetNewCardDeck() => defaultCardDeck;
 
-        public async Task<PokerTable> StartNewGame(IList<Player> players, PokerTable pokerTable) 
+        public async Task<PokerTable> StartNewGame(PokerTable pokerTable) 
         {
             if (_context.Card == null || _context.Card.ToList().Count() == 0)
             {
                 _context.Card?.AddRange(GetNewCardDeck());
             } 
-
-            pokerTable.Players = players;
 
             _context.Table.Update(pokerTable);
             await _context.SaveChangesAsync();

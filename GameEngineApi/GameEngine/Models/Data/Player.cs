@@ -8,7 +8,6 @@ namespace GameEngine.Models.Game
     public class Player
     {
         public int Id { get; set; }
-        public string Name { get; set; }
         public int CurrentBet { get; set; }
         public int Chips { get; set; }
         public IList<Card> Cards { get; set; }

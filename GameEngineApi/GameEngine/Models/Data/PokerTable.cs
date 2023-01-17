@@ -7,9 +7,11 @@ namespace GameEngine.Models.Game
     public class PokerTable
     {
 		public int Id { get; set; }
-        public IList<TableCard> Cards { get; set; }
-        public IList<DeckCard>? CardDeck { get; set; }
-        public List<Player> Players { get; set; }
+        public int OwnerId { get; set; }
+        public Player Owner { get; set; }
+        public IList<Card> Cards { get; set; }
+        public IList<Player> Players { get; set; }
+        public Deck Deck { get; set; }
 		public int Chips { get; set; }
     }
 }

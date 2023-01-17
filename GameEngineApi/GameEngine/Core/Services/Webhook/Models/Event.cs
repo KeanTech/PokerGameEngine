@@ -9,6 +9,10 @@
 		Fold,
 		PlayerCards,
 		TableCards,
-		GameState
+		GameState,
+		PlayerJoined,
+		PlayerLeft,
+		GameStart,
+		RoundEnd
 	}
 }

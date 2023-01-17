@@ -124,20 +124,19 @@ namespace GameEngine.Migrations
                     b.ToTable("Deck");
                 });
 
-            modelBuilder.Entity("GameEngine.Models.Game.PlayerCard", b =>
+            modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
-                    b.Property<int>("CardId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.HasIndex("PlayerId");
+                    b.Property<int>("Chips")
+                        .HasColumnType("int");
 
-                    b.ToTable("PlayerCards");
-                });
+                    b.Property<int>("CurrentBet")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsFolded")
                         .HasColumnType("bit");
@@ -200,6 +199,10 @@ namespace GameEngine.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserSecret")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

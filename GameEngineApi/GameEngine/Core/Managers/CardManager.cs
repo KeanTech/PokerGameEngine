@@ -32,7 +32,7 @@ namespace GameEngine.Core.Managers
             Table = table;
         }
 
-        public void GetPlayerHandValue(List<Card> playerCards, List<Card> boardCards)
+        public List<Player> GetPlayerHandValue(List<Card> playerCards, List<Card> boardCards)
         {
 
 
@@ -40,24 +40,21 @@ namespace GameEngine.Core.Managers
             {
                 List<Card> cards = new List<Card>();
                 cards.AddRange(playerCards);
-                //cards.AddRange(Table.Cards);
                 cards.AddRange(boardCards);
-                CheckForRoyalFlush(new List<Card>());
-            CheckForStraightFlush(cards);
-            CheckForFourOfAKind(cards);
-            CheckForFullHouse(cards);
-            CheckForFlush(cards);
-            CheckForStraight(cards);
-            CheckForThreeOfAKind(cards);
-            CheckForTwoPairs(cards);
-            CheckForOnePair(cards);
-            CheckForHighestCard(cards);
+                //cards.AddRange(Players[i].Cards);
+                //cards.AddRange(Table.Cards);
+                CheckForRoyalFlush(cards);
+                CheckForStraightFlush(cards);
+                CheckForFourOfAKind(cards);
+                CheckForFullHouse(cards);
+                CheckForFlush(cards);
+                CheckForStraight(cards);
+                CheckForThreeOfAKind(cards);
+                CheckForTwoPairs(cards);
+                CheckForOnePair(cards);
+                CheckForHighestCard(cards);
             }
-
-
-            //Looks at current card, next card, and looks for duplicate cards or sequences of cards
-
-
+            return GameWinners;
         }
 
         //private async PokerHand GetHandValue(List<Card> cards)

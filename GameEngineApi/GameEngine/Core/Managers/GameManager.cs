@@ -214,15 +214,11 @@ namespace GameEngine.Core.Managers
 
         public PokerTable GetNewCardDeck(PokerTable pokerTable)
         {
-            if (_context.Card.ToList().Count == 0)
-                _context.Card.AddRange(GetNewCardDeck());
-
             // Get Cards from database
 
             return pokerTable;
         }
 
-        
         public void EndRound(PokerTable pokerTable) 
         {
             
@@ -230,17 +226,18 @@ namespace GameEngine.Core.Managers
 
         public bool EndGame(PokerTable pokerTable)
         {
-
             if (pokerTable == null)
                 return false;
 
             Player? player = pokerTable.Players.FirstOrDefault(x => x.Chips > 0);
             
             if(player == null)
-                GivePlayerStats(player);
+                return false;
 
-            return true;
+            GivePlayerStats(player);
+
             // Delete data from db
+            return true;
         }
 
         private void GivePlayerStats(Player player)

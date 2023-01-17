@@ -1,12 +1,9 @@
-﻿using GameEngine.Core.Enums;
-using GameEngine.Core.Managers;
+﻿using GameEngine.Core.Managers;
 using GameEngine.Core.Services.Webhook;
-using GameEngine.Core.Services.Webhook.Models.Events;
 using GameEngine.Data;
 using GameEngine.Models.Events;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GameEngine.Controllers
 {
@@ -26,13 +23,13 @@ namespace GameEngine.Controllers
 
         [HttpPut]
         [Route("StartNewGame")]
-        public IActionResult StartNewGame(int tableId)
+        public IActionResult StartNewGame(int tableId, int startingChipAmount)
         {
             PokerTable? pokerTable = _context.Table.FirstOrDefault(x => x.Id == tableId);
             if (pokerTable == null)
                 return NotFound();
 
-            pokerTable = _gameManager.StartNewGame(pokerTable, 500).Result;
+            pokerTable = _gameManager.StartNewGame(pokerTable, startingChipAmount).Result;
 
             return Ok();
         }

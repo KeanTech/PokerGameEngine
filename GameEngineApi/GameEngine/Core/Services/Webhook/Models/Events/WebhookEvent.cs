@@ -1,4 +1,6 @@
-﻿namespace GameEngine.Core.Services.Webhook.Models.Events
+﻿using GameEngine.Models.Game;
+
+namespace GameEngine.Core.Services.Webhook.Models.Events
 {
 	public class WebhookEvent
 	{

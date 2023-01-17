@@ -6,6 +6,6 @@ namespace GameEngine.Core.Services.Webhook
 	{
 		Task NotifySubscriberOfStateEvent(string userIdentifier, int tableId, WebhookEvent eventData);
 		Task NotifySubscribersOfPlayerEvent(PlayerEvent eventData, int tableId);
-		void Subscribe(string callbackUrl, string userIdentifier, int tableId);
+		void Subscribe(string callbackUrl, string userSecret, int tableId);
 	}
 }

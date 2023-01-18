@@ -76,6 +76,32 @@ namespace GameEngine.Migrations
                     b.ToTable("CardPokerTable");
                 });
 
+            modelBuilder.Entity("GameEngine.Core.Services.Webhook.SubscribeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CallbackUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TableId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserSecret")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TableId");
+
+                    b.ToTable("Subscribe");
+                });
+
             modelBuilder.Entity("GameEngine.Models.Game.Accessory", b =>
                 {
                     b.Property<int>("Id")
@@ -124,39 +150,26 @@ namespace GameEngine.Migrations
                     b.ToTable("Deck");
                 });
 
-            modelBuilder.Entity("GameEngine.Models.Game.PlayerCard", b =>
+            modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
-                    b.Property<int>("CardId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("PlayerId")
+                    b.Property<int>("Chips")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("PlayerCards");
-                });
+                    b.Property<int>("CurrentBet")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsFolded")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("PokerTableId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PokerTableId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Player");
                 });
@@ -200,6 +213,10 @@ namespace GameEngine.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserSecret")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -256,6 +273,17 @@ namespace GameEngine.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("GameEngine.Core.Services.Webhook.SubscribeModel", b =>
+                {
+                    b.HasOne("GameEngine.Models.Game.PokerTable", "Table")
+                        .WithMany("Subscriptions")
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Table");
+                });
+
             modelBuilder.Entity("GameEngine.Models.Game.Accessory", b =>
                 {
                     b.HasOne("GameEngine.Models.Game.User", null)
@@ -267,15 +295,15 @@ namespace GameEngine.Migrations
 
             modelBuilder.Entity("GameEngine.Models.Game.Player", b =>
                 {
+                    b.HasOne("GameEngine.Models.Game.User", "User")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("GameEngine.Models.Game.PokerTable", null)
                         .WithMany("Players")
                         .HasForeignKey("PokerTableId");
-
-                    b.HasOne("GameEngine.Models.Game.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });
@@ -308,6 +336,8 @@ namespace GameEngine.Migrations
             modelBuilder.Entity("GameEngine.Models.Game.PokerTable", b =>
                 {
                     b.Navigation("Players");
+
+                    b.Navigation("Subscriptions");
                 });
 
             modelBuilder.Entity("GameEngine.Models.Game.User", b =>

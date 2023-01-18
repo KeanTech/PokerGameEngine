@@ -1,6 +1,6 @@
 ﻿namespace GameEngine.Models.Events
 {
-    public class TurnEvent : WebHookEvent
+    public class TurnEvent
     {
         public int PlayerId { get; set; }
         public string PlayerIdentifier { get; set; }

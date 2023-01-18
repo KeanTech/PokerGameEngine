@@ -8,7 +8,7 @@ namespace GameEngine.Core.Managers
     {
         public List<Player> Players { get; set; }
         public List<Player> GameWinners { get; set; }
-        public Table Table { get; set; }
+        public PokerTable Table { get; set; }
         public PokerHand? HandValue { get; set; }
         public List<Card> PlayerHand { get; set; }
         public Card HighestCard { get; set; }
@@ -26,7 +26,7 @@ namespace GameEngine.Core.Managers
         {
 
         }
-        public CardManager(List<Player> players, Table table)
+        public CardManager(List<Player> players, PokerTable table)
         {
             Players = players;
             Table = table;
@@ -144,12 +144,12 @@ namespace GameEngine.Core.Managers
                     //If the sequence ends on the last cards in the list
                     if (i == cards.Count - 1)
                     {
-                        sequences.Add(new Card(NextCardValue, NextCardSymbol));
+                        //sequences.Add(new Card(NextCardValue, NextCardSymbol));
                     }
 
                     else
                     {
-                        sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
+                        //sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
                     }
                 }
             }

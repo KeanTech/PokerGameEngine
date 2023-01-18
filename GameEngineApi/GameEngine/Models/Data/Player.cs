@@ -8,19 +8,13 @@ namespace GameEngine.Models.Game
     public class Player
     {
         [ForeignKey("User")]
+        [Key]
         public int Id { get; set; }
-        public string Name { get; set; }
         public int CurrentBet { get; set; }
-        public int ChipsValue { get; set; }
-        public IList<PlayerCard> Cards { get; set; }
+        public int Chips { get; set; }
+        public IList<Card> Cards { get; set; }
+        public PokerTable Table { get; set; }
+        public User User { get; set; }
         public bool IsFolded { get; set; }
-
-        public Player() { }
-        public Player(User user, int chipsValue) : base ()
-        {
-            Id = user.Id;
-            Name = user.Name;
-            ChipsValue = chipsValue;
-        }
     }
 }

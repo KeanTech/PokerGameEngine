@@ -1,24 +1,31 @@
-﻿using GameEngine.Core.Services.Webhook.Models.Events;
+﻿using GameEngine.Core.Services.Webhook.Exceptions;
+using GameEngine.Core.Services.Webhook.Models.Events;
+using GameEngine.Data;
 using RestSharp;
 
 namespace GameEngine.Core.Services.Webhook
 {
 	public class WebhookService : IWebhookService
 	{
-		private WebhookContext _context;
+		private GameEngineContext _context;
 		private RestClient _client;
 
-		public WebhookService(WebhookContext context)
+		public WebhookService(GameEngineContext context)
 		{
 			_client = new RestClient();
 			_context = context;
 		}
 
-		public void Subscribe(string callbackUrl, string userIdentifier, int tableId)
+		public void Subscribe(string callbackUrl, string userSecret, int tableId)
 		{
 			_context.Database.EnsureCreated();
+			var isSub = _context.Subscribe.Any(e => e.UserSecret.Equals(userSecret));
+			if (isSub)
+			{
+				throw new AlreadySubscribedException($"User with UserSecret:{userSecret} is already subscribed to this table with tableId:{tableId}");
+			}
 			_context.Subscribe.Add(new SubscribeModel()
-				{ CallbackUrl = callbackUrl, TableId = tableId, UserIdentifier = userIdentifier });
+				{ CallbackUrl = callbackUrl, TableId = tableId, UserSecret = userSecret });
 			_context.SaveChanges();
 		}
 
@@ -29,7 +36,7 @@ namespace GameEngine.Core.Services.Webhook
 
 		public async Task NotifySubscriberOfStateEvent(string userIdentifier, int tableId, WebhookEvent eventData)
 		{
-			var sub = _context.Subscribe.Where(e => e.UserIdentifier.Equals(userIdentifier) && e.TableId.Equals(tableId)).ToList();
+			var sub = _context.Subscribe.Where(e => e.UserSecret.Equals(userIdentifier) && e.TableId.Equals(tableId)).ToList();
 			var request = new RestRequest(sub.FirstOrDefault()?.CallbackUrl + $"/{eventData.EventType}");
 			await _client.PostAsync(request);
 		}

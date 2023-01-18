@@ -12,7 +12,7 @@
 		GameState,
 		PlayerJoined,
 		PlayerLeft,
-		GameStart,
+		RoundStart,
 		RoundEnd,
 		PlayerReady,
 		TableCreated,

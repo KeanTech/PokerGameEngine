@@ -7,6 +7,7 @@ using GameEngine.Models.Events;
 using GameEngine.Models.Game;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
+using System.Reflection;
 
 namespace GameEngine.Controllers
 {
@@ -74,51 +75,35 @@ namespace GameEngine.Controllers
             if (pokerTable == null)
                 return NotFound();
 
-            Player player = new Player() { Table = pokerTable, User = user, Cards = new List<Card>() };
-            pokerTable.Players.Add(player);
+            bool success = _gameManager.JoinTable(user, pokerTable);
 
-            _context.SaveChanges();
+            if(success)
+                return Ok();
 
-            PlayerEvent playerEvent = new PlayerEvent(user.UserSecret, Event.PlayerJoined, player.Id);
-            _service.NotifySubscribersOfPlayerEvent(playerEvent, tableId);
-            return Ok();
+            return BadRequest();
         }
 
         [HttpPost]
         [Route("CreateTable")]
-        public IActionResult CreateTable(User inputUser)
+        public IActionResult CreateTable(int userId)
         {
-            PokerTable pokerTable = new PokerTable();
-
-            if (pokerTable.Deck == null)
-                pokerTable.Deck = new Deck();
-
-            if (pokerTable.Deck.Cards == null)
-                pokerTable.Deck.Cards = new List<Card>();
-
-            pokerTable.Deck.Cards = _context.Card.ToList();
-            var user = _context.User.FirstOrDefault(x => x.Id == inputUser.Id);
-
-            if(user == null) 
+            User? user = _context.User.FirstOrDefault(x => x.Id == userId);
+            if (user == null)
                 return NotFound();
-            
-            Player player = new Player();
-            player = new Player() { User = user, Cards = new List<Card>() };
-            _context.Player.Add(player);
-            _context.SaveChanges();
-            pokerTable.Owner = player;
-            pokerTable.OwnerId = player.Id;
 
+            bool result = _gameManager.CreateNewPokerTable(user);
 
-            _context.Table.Add(pokerTable);
-            _context.SaveChanges();
+            if (result)
+                return Ok();
 
-            player.Table = pokerTable;
-            _context.Update(player);
-            _context.SaveChanges();
+            return BadRequest();
+        }
 
-            WebhookEvent webhookEvent = new WebhookEvent("secret", Event.TableCreated);
-            _service.NotifySubscriberOfStateEvent(user.UserSecret, pokerTable.Id, webhookEvent);
+        [HttpPut]
+        [Route("LeaveTable")]
+        public IActionResult LeaveTable(int playerId) 
+        {
+
 
             return Ok();
         }

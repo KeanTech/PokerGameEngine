@@ -15,11 +15,11 @@ namespace GameEngine.Controllers
     [Route("api/[controller]")]
     public class GameController : Controller
     {
-        private readonly GameManager _gameManager;
+        private readonly IGameManager _gameManager;
         private readonly IWebhookService _service;
         private readonly GameEngineContext _context;
 
-        public GameController(IWebhookService service, GameEngineContext context, GameManager gameManager)
+        public GameController(IWebhookService service, GameEngineContext context, IGameManager gameManager)
         {
             _service = service;
             _context = context;

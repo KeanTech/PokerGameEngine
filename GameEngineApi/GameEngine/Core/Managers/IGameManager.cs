@@ -37,13 +37,6 @@ namespace GameEngine.Core.Managers
         /// <returns>A new GameState if theres is no GameState with that tableId
         /// <para>Else it returns the GameState from the database</para></returns>
         PokerTable GetCurrentGame(int tableId);
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        Task<PokerTable> ResetPlayerBets(PokerTable pokerTable);
-        
         bool PlayerCall(BetEvent betEvent);
         bool PlayerRaise(BetEvent betEvent);
         bool PlayerAllIn(BetEvent betEvent);

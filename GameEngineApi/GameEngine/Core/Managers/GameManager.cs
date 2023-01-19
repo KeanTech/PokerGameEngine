@@ -45,7 +45,7 @@ namespace GameEngine.Core.Managers
             }
 
             // Send notification to the starting player. so the player knows it is their turn
-            WebhookEvent playerEvent = CreatePlayerEvent(startingPlayer, Event.PlayerTurn);
+            WebhookEvent playerEvent = CreatePlayerEvent(startingPlayer, Event.PlayerTurn, startingPlayer.Id);
             NotifyPlayer(playerEvent, startingPlayer.Id);
             
             return pokerTable;
@@ -557,7 +557,7 @@ namespace GameEngine.Core.Managers
                         {
                             PlayerCheck(turnEvent);
                             if (IsLastPlayer(pokerTable, turnEvent.PlayerId))
-                                EndRound(pokerTable, entryBet);
+                                EndRound(pokerTable);
 
                             return true;
                         }
@@ -591,14 +591,14 @@ namespace GameEngine.Core.Managers
             return PlayerBet(betEvent, "AllIn");
         }
 
-        public bool PlayerFold(TurnEvent turnEvent)
+        public bool PlayerFold(TurnEvent turnEvent, int entryBet = 500)
         {
-            return PlayerTurnEvent(turnEvent, "Fold");
+            return PlayerTurnEvent(turnEvent, "Fold", entryBet);
         }
 
-        public bool PlayerCheck(TurnEvent turnEvent)
+        public bool PlayerCheck(TurnEvent turnEvent, int entryBet = 500)
         {
-            return PlayerTurnEvent(turnEvent, "Check");
+            return PlayerTurnEvent(turnEvent, "Check", entryBet);
         }
 
         #endregion

@@ -37,7 +37,7 @@ namespace GameEngine.Controllers
             if (startingChipAmount == 0)
                 return BadRequest();
 
-            pokerTable = _gameManager.StartNewGame(pokerTable, startingChipAmount).Result;
+            pokerTable = _gameManager.StartNewGame(pokerTable.Id, startingChipAmount).Result;
 
             
             return Ok();

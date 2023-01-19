@@ -1,5 +1,8 @@
-﻿using GameEngine.Models.Events;
+﻿using GameEngine.Core.Services.Webhook.Models.Events;
+using GameEngine.Core.Services.Webhook.Models;
+using GameEngine.Models.Events;
 using GameEngine.Models.Game;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace GameEngine.Core.Managers
@@ -13,20 +16,19 @@ namespace GameEngine.Core.Managers
         /// </summary>
         /// <param name="tabelId"></param>
         /// <returns></returns>
-        Task<PokerTable> StartNewGame(PokerTable pokerTable, int startingChipAmount);
+        Task<PokerTable> StartNewGame(int pokerTableId, int amountOfStartingChips);
 
-        /// <summary>
-        /// This method clears the Table pool, playercards, playerBets, and tableCards
-        /// </summary>
-        /// <returns></returns>
-        Task<PokerTable> ClearTable(PokerTable pokerTable);
-
+        void StartRound(PokerTable pokerTable, int entryBet);
+        void EndRound(PokerTable pokerTable);
         /// <summary>
         /// Needs a valid GameState to use this method
         /// <para>When this method is finished the GameState will be deleted from the database and the winning player gets stats</para>
         /// </summary>
         /// <param name="gameState"></param>
-        void EndGame(PokerTable pokerTable);
+        bool EndGame(PokerTable pokerTable);
+        public bool CreateNewPokerTable(User userCreatingTheTable);
+        public bool JoinTable(User user, PokerTable pokerTable);
+        public bool LeaveTable(Player player, PokerTable pokerTable);
 
         /// <summary>
         /// This method need a valid tableId
@@ -37,41 +39,15 @@ namespace GameEngine.Core.Managers
         PokerTable GetCurrentGame(int tableId);
         
         /// <summary>
-        /// This method will generate a new deck for the table
-        /// </summary>
-        /// <param name="gameState"></param>
-        /// <returns></returns>
-        PokerTable GetNewCardDeck(PokerTable pokerTable);
-
-        /// <summary>
-        /// This method will update the gameState so that players have cards in their card List 
-        /// </summary>
-        /// <param name="amountOfCards"></param>
-        /// <param name="gameState"></param>
-        /// <returns></returns>
-        Task<PokerTable> GiveCardsToPlayers(PokerTable pokerTable);
-
-        /// <summary>
-        /// This method will update the gameState so that players have cards in their card List 
-        /// </summary>
-        /// <param name="amountOfCards"></param>
-        /// <param name="gameState"></param>
-        /// <returns></returns>
-        Task<PokerTable> GiveCardsToTable(int amountOfCards, PokerTable pokerTable);
-
-        /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
         Task<PokerTable> ResetPlayerBets(PokerTable pokerTable);
-        Task<PokerTable> UpdateChipsPool(PokerTable pokerTable, int updateValue);
-        Task<PokerTable> UpdateGameState(PokerTable pokerTable);
+        
         bool PlayerCall(BetEvent betEvent);
         bool PlayerRaise(BetEvent betEvent);
         bool PlayerAllIn(BetEvent betEvent);
-        bool PlayerFold(TurnEvent turnEvent);
-        bool PlayerCheck(TurnEvent turnEvent);
-
-
+        bool PlayerFold(TurnEvent turnEvent, int entryBet = 500);
+        bool PlayerCheck(TurnEvent turnEvent, int entryBet = 500);
     }
 }

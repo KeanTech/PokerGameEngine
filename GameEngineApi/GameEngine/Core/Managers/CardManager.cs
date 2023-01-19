@@ -10,7 +10,6 @@ namespace GameEngine.Core.Managers
         public List<Player> GameWinners { get; set; }
         public PokerTable Table { get; set; }
         public PokerHand? HandValue { get; set; }
-        public List<Card> PlayerHand { get; set; }
         public Card HighestCard { get; set; }
 
         private int DuplicateCounter = 1;
@@ -34,37 +33,46 @@ namespace GameEngine.Core.Managers
 
         public List<Player> GetPlayerHandValue(List<Card> playerCards, List<Card> boardCards)
         {
+            List<Player> players = new List<Player>();
+            players.Add(new Player()
+            {
+                Id = 1,
+                Cards = playerCards,
+            });
+            players.Add(new Player()
+            {
+                Id = 2,
+                Cards = playerCards,
+            });
 
-
-            for (int i = 0; i < Players.Count; i++)
+            for (int i = 0; i < players.Count; i++)
             {
                 List<Card> cards = new List<Card>();
                 cards.AddRange(playerCards);
                 cards.AddRange(boardCards);
-                //cards.AddRange(Players[i].Cards);
-                //cards.AddRange(Table.Cards);
-                CheckForRoyalFlush(cards);
-                CheckForStraightFlush(cards);
-                CheckForFourOfAKind(cards);
-                CheckForFullHouse(cards);
-                CheckForFlush(cards);
-                CheckForStraight(cards);
-                CheckForThreeOfAKind(cards);
-                CheckForTwoPairs(cards);
-                CheckForOnePair(cards);
                 CheckForHighestCard(cards);
+                GetHandValue(cards);
+
             }
             return GameWinners;
         }
 
-        //private async PokerHand GetHandValue(List<Card> cards)
-        //{
-        //    var tasks = new List<Task<bool>>();
-        //    tasks.Add(CheckForFlush(cards));
-        //    await Task.WhenAny(tasks);
-        //}
+        private async void GetHandValue(List<Card> cards)
+        {
+            var tasks = new List<Task<bool>>();
+            tasks.Add(CheckForRoyalFlush(cards));
+            tasks.Add(CheckForStraightFlush(cards));
+            tasks.Add(CheckForFourOfAKind(cards));
+            tasks.Add(CheckForFullHouse(cards));
+            tasks.Add(CheckForFlush(cards));
+            tasks.Add(CheckForStraight(cards));
+            tasks.Add(CheckForThreeOfAKind(cards));
+            tasks.Add(CheckForTwoPairs(cards));
+            tasks.Add(CheckForOnePair(cards));
+            await Task.WhenAny(tasks);
+        }
 
-        private bool CheckForRoyalFlush(List<Card> cardsToCheck)
+        private async Task<bool> CheckForRoyalFlush(List<Card> cardsToCheck)
         {
             List<Card> sequencedCards = CheckForSequences(cardsToCheck);
             IEnumerable<Card> isFlush = sequencedCards.GroupBy(x => x.Symbol).Where(x => x.Count() >= 5).FirstOrDefault();
@@ -76,7 +84,7 @@ namespace GameEngine.Core.Managers
             return false;
         }
 
-        private bool CheckForStraightFlush(List<Card> cards)
+        private async Task<bool> CheckForStraightFlush(List<Card> cards)
         {
             List<Card> sequencedCards = CheckForSequences(cards);
             IEnumerable<Card> straightFlush = sequencedCards.GroupBy(x => x.Symbol).Where(y => y.Count() >= 5).FirstOrDefault();
@@ -101,12 +109,12 @@ namespace GameEngine.Core.Managers
         }
 
 
-        private void CheckForHighestCard(List<Card> cards)
+        private async void CheckForHighestCard(List<Card> cards)
         {
             HighestCard = cards.OrderBy(x => x.Type).ElementAt(cards.Count - 1);
         }
 
-        private bool CheckForStraight(List<Card> cards)
+        private async Task<bool> CheckForStraight(List<Card> cards)
         {
             List<Card> sequencesCards = CheckForSequences(cards);
             IEnumerable<Card> noDuplicates = sequencesCards.Distinct().ToList();
@@ -144,19 +152,28 @@ namespace GameEngine.Core.Managers
                     //If the sequence ends on the last cards in the list
                     if (i == cards.Count - 1)
                     {
-                        //sequences.Add(new Card(NextCardValue, NextCardSymbol));
+                        sequences.Add(new Card()
+                        {
+                            Type = NextCardValue,
+                            Symbol = NextCardSymbol,
+                        });
                     }
 
                     else
                     {
-                        //sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
+                        sequences.Add(new Card()
+                        {
+                            Type = CurrentCardValue,
+                            Symbol = CurrentCardSymbol
+                        });
                     }
                 }
             }
+            SequenceCounter = 1;
             return sequences;
         }
 
-        private bool CheckForFullHouse(List<Card> cards)
+        private async Task<bool> CheckForFullHouse(List<Card> cards)
         {
             IEnumerable<Card> threeOfAKind = cards.GroupBy(x => x.Type).FirstOrDefault(x => x.Count() == 3);
             if (threeOfAKind != null)
@@ -176,7 +193,7 @@ namespace GameEngine.Core.Managers
             return false;
         }
 
-        private bool CheckForFourOfAKind(List<Card> cards)
+        private async Task<bool> CheckForFourOfAKind(List<Card> cards)
         {
             IEnumerable<Card> fourOfAKind = cards.GroupBy(x => x.Type).FirstOrDefault(x => x.Count() == 4);
             if (fourOfAKind != null)
@@ -187,7 +204,7 @@ namespace GameEngine.Core.Managers
             return false;
         }
 
-        private bool CheckForThreeOfAKind(List<Card> cardsToCheck)
+        private async Task<bool> CheckForThreeOfAKind(List<Card> cardsToCheck)
         {
             IEnumerable<Card> threeOfAKind = cardsToCheck.GroupBy(x => x.Type).FirstOrDefault(x => x.Count() == 3);
             if (threeOfAKind != null)
@@ -198,7 +215,7 @@ namespace GameEngine.Core.Managers
             return false;
         }
 
-        private bool CheckForTwoPairs(List<Card> cardsToCheck)
+        private async Task<bool> CheckForTwoPairs(List<Card> cardsToCheck)
         {
             var twoPairsQuery = cardsToCheck.GroupBy(x => x.Symbol).Where(y => y.Count() == 2);
             if (twoPairsQuery != null)
@@ -209,7 +226,7 @@ namespace GameEngine.Core.Managers
             return false;
         }
 
-        private bool CheckForOnePair(List<Card> cardsToCheck)
+        private async Task<bool> CheckForOnePair(List<Card> cardsToCheck)
         {
             IEnumerable<Card> onePair = cardsToCheck.GroupBy(x => x.Type).FirstOrDefault(x => x.Count() == 2);
             if (onePair != null)
@@ -219,80 +236,5 @@ namespace GameEngine.Core.Managers
             }
             return false;
         }
-
-        //private List<Card> CheckForSequences(List<Card> cards)
-        //{
-        //    List<Card> sequences = new List<Card>();
-        //    cards = cards.OrderBy(x => x.Type).ToList();
-
-        //    //List<Card> testOne = cards.GroupBy(x => (int)x.Symbol).ToList();
-
-        //    for (int i = 0; i < cards.Count; i++)
-        //    {
-        //        if (i != cards.Count - 1)
-        //        {
-        //            CurrentCardValue = cards[i].Type;
-        //            CurrentCardSymbol = cards[i].Symbol;
-
-        //            NextCardValue = cards[i + 1].Type;
-        //            NextCardSymbol = cards[i + 1].Symbol;
-        //        }
-
-        //        //Checks for a card sequence, example: 7, 8 or 4, 5
-        //        if (NextCardValue == CurrentCardValue + 1)
-        //            {
-        //                SequenceCounter++;
-        //                //If its a start of a sequence
-        //            if (SequenceCounter <= 2)
-        //                {
-
-        //                    sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
-        //                    sequences.Add(new Card(NextCardValue, NextCardSymbol));
-        //                }
-
-        //                //If the sequence ends on the last cards in the list
-        //            else if (i == cards.Count - 1)
-        //                {
-        //                    sequences.Add(new Card(NextCardValue, NextCardSymbol));
-        //                }
-
-        //                else
-        //                {
-        //                    sequences.Add(new Card(CurrentCardValue, CurrentCardSymbol));
-        //                }
-        //            }
-        //    }
-        //    return sequences;
-        //}
-
-
-        //private List<Card> CheckForDuplicates(List<Card> cards)
-        //{
-        //    cards = cards.OrderBy(x => x.Type).ToList();
-        //    List<Card> duplicates = new List<Card>();
-
-        //    for (int i = 0; i < cards.Count; i++)
-        //    {
-
-
-        //        if (i != cards.Count - 1)
-        //        {
-        //            CurrentCardValue = cards[i].Type;
-        //            CurrentCardSymbol = cards[i].Symbol;
-
-        //            NextCardValue = cards[i + 1].Type;
-        //            NextCardSymbol = cards[i + 1].Symbol;
-        //        }
-
-        //        //Checks for duplicate card values
-        //        if (CurrentCardValue == NextCardValue)
-        //        {
-        //            DuplicateCounter++;
-        //            duplicates.Add(new Card(CurrentCardValue, CurrentCardSymbol));
-        //            //DuplicateCounter = 1;
-        //        }
-        //    }
-        //    return duplicates;
-        //}
     }
 }

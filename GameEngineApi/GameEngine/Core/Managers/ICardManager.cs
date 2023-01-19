@@ -4,6 +4,6 @@ namespace GameEngine.Core.Managers
 {
     public interface ICardManager
     {
-        void GetPlayerHandValue(List<Card> playerCards, List<Card> boardCards);
+        List<Player> GetPlayerHandValue(List<Card> playerCards, List<Card> boardCards);
     }
 }

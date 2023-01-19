@@ -30,7 +30,7 @@ namespace GameEngine.Controllers
             {
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Ten,
+                    Type = Core.Enums.CardTypes.Four,
                     Symbol = Core.Enums.Symbols.Heart,
                 },
                 new Card()
@@ -43,7 +43,7 @@ namespace GameEngine.Controllers
             {
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Two,
+                    Type = Core.Enums.CardTypes.Four,
                     Symbol = Core.Enums.Symbols.Diamond,
                 },
                 new Card()
@@ -58,7 +58,7 @@ namespace GameEngine.Controllers
                 },
                 new Card()
                 {
-                    Type = Core.Enums.CardTypes.Queen,
+                    Type = Core.Enums.CardTypes.Seven,
                     Symbol = Core.Enums.Symbols.Heart,
                 },
                 new Card()

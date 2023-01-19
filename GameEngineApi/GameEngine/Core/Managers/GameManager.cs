@@ -6,7 +6,7 @@ using GameEngine.Models.Game;
 
 namespace GameEngine.Core.Managers
 {
-    public class GameManager : IGameManager
+    public class GameManager
     {
         private readonly GameEngineContext _context;
         private readonly IWebhookService _webhookService;
